@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VolunteerMngSystm", "VolunteerMngSystm\VolunteerMngSystm.csproj", "{AC604CB4-1476-4CB8-AB18-81F3DCDC0278}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AC604CB4-1476-4CB8-AB18-81F3DCDC0278}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC604CB4-1476-4CB8-AB18-81F3DCDC0278}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC604CB4-1476-4CB8-AB18-81F3DCDC0278}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC604CB4-1476-4CB8-AB18-81F3DCDC0278}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {04590D6D-B926-48D9-94D9-C7AC86E60E80}
+	EndGlobalSection
+EndGlobal

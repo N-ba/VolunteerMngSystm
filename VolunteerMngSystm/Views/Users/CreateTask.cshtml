@@ -1,0 +1,78 @@
+﻿@model VolunteerMngSystm.Models.VolunteeringTask
+
+@{
+    Layout = "~/Views/Shared/_OrgLayout.cshtml";
+    ViewData["Title"] = "NewTask";
+}
+
+<h1>Creat new Task</h1>
+
+<h5>As Volunteer</h5>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateTask">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Date_of_Task" class="control-label">For when?</label>
+                <input asp-for="Date_of_Task" type="date" class="form-control" />
+                <span asp-validation-for="Date_of_Task" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Time_of_Task" class="control-label">What time?</label>
+                <input asp-for="Time_of_Task" type="time" class="form-control" />
+                <span asp-validation-for="Time_of_Task" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                @*<label for="Qulification">Qulifications required</label><br />
+        <input type="checkbox" name="Epertise[]" value="Football"> Nursing<br />
+        <input type="checkbox" name="Epertise[]" value="Cricket"> Doctor<br />
+        <input type="checkbox" name="Epertise[]" value="Tennis"> Police<br />*@
+                @*<select asp-for="ID" asp-items="@(new SelectList(@ViewBag.message,"ID", "Suject"))" class="form-select" aria-label="Default select example">
+                    <option selected>Select expertise needed</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                </select>*@
+                <label> @Html.DisplayNameFor(model => model.Expertise_ID)</label>
+                <p>@Html.DropDownListFor(model => model.Expertise_ID, new SelectList(Model.ExperiseList, "ID", "Subject"), "--Select an Expertise--") </p>
+            </div>
+            <div class="form-group">
+                <label for="VolunteerNum">How many volunterrs are required?</label>
+                <input type="number" name="value" id="value" class="form-control"/>
+                <span asp-validation-for="Time_of_Task" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Street" class="control-label"></label>
+                <input asp-for="Street" class="form-control" />
+                <span asp-validation-for="Street" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Postal_Code" class="control-label">Postal Code</label>
+                <input asp-for="Postal_Code" class="form-control" />
+                <span asp-validation-for="Postal_Code" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Creat Task" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@*<div>
+    <a asp-action="Index">Back to List</a>
+</div>*@
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

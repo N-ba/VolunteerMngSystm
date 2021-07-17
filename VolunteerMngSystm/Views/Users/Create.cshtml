@@ -1,0 +1,113 @@
+﻿@model VolunteerMngSystm.Models.UserExpertiseViewModel
+
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h1>Register</h1>
+
+<h5>As Volunteer</h5>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Forename" class="control-label"></label>
+                <input asp-for="Forename" class="form-control" />
+                <span asp-validation-for="Forename" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Surname" class="control-label"></label>
+                <input asp-for="Surname" class="form-control" />
+                <span asp-validation-for="Surname" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DOB" class="control-label">Date of Birth</label>
+                <input asp-for="DOB" type="date" class="form-control" />
+                <span asp-validation-for="DOB" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Gender" class="control-label"></label><br />
+                <input asp-for="Gender" type="radio" value="Male" /> Male<br />
+                <input asp-for="Gender" type="radio" value="Female" /> Female<br />
+                <input asp-for="Gender" type="radio" value="0" /> Other<br />
+                <span asp-validation-for="Gender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+                <span asp-validation-for="Email" class="text-danger">@ViewBag.EmailExists</span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" type="password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div><br /><br />
+            <div class="form-group">
+                <label asp-for="Personal_ID" class="control-label">Verification ID</label>
+                <input asp-for="Personal_ID" type="file" accept="image/* " />
+                <span asp-validation-for="Personal_ID" class="text-danger"></span>
+            </div><br />
+
+            <div class="form-group">
+                <table>
+                    @for (int i = 0; i < Model.AvailableSubjects.Capacity; i++)
+                    {
+                    <tr>
+                        <td>
+                            @Html.CheckBoxFor(it => Model.AvailableSubjects[i].isChecked)
+                        </td>
+                        <td>
+                            @Html.HiddenFor(x => Model.AvailableSubjects[i].ID)
+                            @Html.DisplayFor(it => Model.AvailableSubjects[i].Subject)
+                        </td>
+                        @*SelectedExpertise Se = new SelectedExpertise();
+        <input asp-for="@Se.isExpertise" type="checkbox">*@
+                        @*<input @Html.CheckBoxFor(model => model.Experiselist[i].isChecked) />
+        <label>@Model.Experiselist[i].Subject</label>
+        <br />*@
+                    </tr>
+                    }
+                    @*<label> @Html.DisplayNameFor(model => model.Expertise_ID)</label>*@
+                    @*<p>@Html.CheckBoxFor(model => model.Experiselist, new SelectList(Model.Experiselist, "ID", "Subject"), "--Select an Expertise--") </p>*@
+
+                </table>
+            </div>
+            <div class="form-group">
+                <label asp-for="street" class="control-label"></label>
+                <input asp-for="street" class="form-control" />
+                <span asp-validation-for="street" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="City" class="control-label"></label>
+                <input asp-for="City" class="form-control" />
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Postal_Code" class="control-label">Postal Code</label>
+                <input asp-for="Postal_Code" class="form-control" />
+                <span asp-validation-for="Postal_Code" class="text-danger"></span>
+            </div><br /><br />
+            <div class="form-group">
+                <label asp-for="Phone_number" class="control-label">Phone number</label>
+                <input asp-for="Phone_number" class="form-control" />
+                <span asp-validation-for="Phone_number" class="text-danger"></span>
+                <span asp-validation-for="Phone_number" class="text-danger">@ViewBag.PhoneExists</span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Register" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
