@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.Mvc;
@@ -178,19 +180,43 @@ namespace VolunteerMngSystm.Controllers
                 {
                     string address = users.Postal_Code + ", " + users.street + ", " + users.City;
 
+                    string beginAddress = "University of hull";
+
                     string requestUri = string.Format("https://maps.googleapis.com/maps/api/geocode/xml?key={1}&address={0}&sensor=false", Uri.EscapeDataString(address), "AIzaSyDlmElDRET9npkWNPAQG6DwvYVi2YVHYF0");
-                    
+
                     WebRequest request = WebRequest.Create(requestUri);
                     WebResponse response = request.GetResponse();
-                    
+
                     XDocument xdoc = XDocument.Load(response.GetResponseStream());
-                    
+
+
                     XElement result = xdoc.Element("GeocodeResponse").Element("result");
-                    XElement locationElement = result.Element("geometry").Element("location");
-                    users.Latitude = Double.Parse(locationElement.Element("lat").Value);
-                    users.Longitude = Double.Parse(locationElement.Element("lng").Value);
+                    //XElement locationElement = result.Element("geometry").Element("location");
 
-
+                    XElement country = result.Element("formatted_address");
+                    bool validAddress = false;
+                    foreach (var n in country.Value.Split(' '))
+                    {
+                        if (n == "UK")
+                        {
+                            validAddress = true;
+                            //users.Latitude = Double.Parse(locationElement.Element("lat").Value);
+                            //users.Longitude = Double.Parse(locationElement.Element("lng").Value);
+                        }
+                    }
+                    if (!validAddress)
+                    {
+                        ViewBag.wrongAddress = "Address Invalid";
+                        var item = _context.Expertises.ToList();
+                        UserExpertiseViewModel Vm = new UserExpertiseViewModel();
+                        Vm.AvailableSubjects = item.Select(e => new CheckBoxItems()
+                        {
+                            ID = e.ID,
+                            Subject = e.Subject,
+                            isChecked = false
+                        }).ToList();
+                        return View(Vm);
+                    }
 
                     var userEmail = await _context.Users
                 .FirstOrDefaultAsync(m => m.Email == users.Email);
@@ -368,10 +394,53 @@ namespace VolunteerMngSystm.Controllers
             try
             {
                 if (ModelState.IsValid)
-                {                    
+                {
+                    string address = volunteeringTask.Postal_Code + ", " + volunteeringTask.Street + ", " + volunteeringTask.City;
+
+                    string location;
+
+                    string requestUri = string.Format("https://maps.googleapis.com/maps/api/geocode/xml?key={1}&address={0}&sensor=false", Uri.EscapeDataString(address), "AIzaSyDlmElDRET9npkWNPAQG6DwvYVi2YVHYF0");
+                    string requestDistUri;
+
+
+                    WebRequest request = WebRequest.Create(requestUri);
+                    WebResponse response = request.GetResponse();
+
+                    XDocument xdoc = XDocument.Load(response.GetResponseStream());
+
+                    XElement result = xdoc.Element("GeocodeResponse").Element("result");
+                    XElement locationElement = result.Element("geometry").Element("location");
+
+
+                    XElement country = result.Element("formatted_address");
+                    bool validAddress = false;
+                    foreach (var n in country.Value.Split(' '))
+                    {
+                        if (n == "UK")
+                        {
+                            validAddress = true;
+                            volunteeringTask.Latitude = Double.Parse(locationElement.Element("lat").Value);
+                            volunteeringTask.Longitude = Double.Parse(locationElement.Element("lng").Value);
+                        }
+                    }
+                    if (!validAddress)
+                    {
+                        ViewBag.wrongAddress = "Address Invalid";
+                        var item = _context.Expertises.ToList();
+                        UserExpertiseViewModel Vm = new UserExpertiseViewModel();
+                        Vm.AvailableSubjects = item.Select(e => new CheckBoxItems()
+                        {
+                            ID = e.ID,
+                            Subject = e.Subject,
+                            isChecked = false
+                        }).ToList();
+                        return View(Vm);
+                    }
+
                     volunteeringTask.Organisation_ID = orgID;
                     _context.Add(volunteeringTask);
                     await _context.SaveChangesAsync();
+
 
                     // NEW CODE FOR MAKING THE VOLUNTEERS CONNECTED TO A SPECIFIC TASK 
                     List<Requests> requests = new List<Requests>();
@@ -380,8 +449,73 @@ namespace VolunteerMngSystm.Controllers
                     {
                         if (item.Expertise_ID == volunteeringTask.Expertise_ID)
                         {
-                            //se.Add(new SelectedExpertise() { Users_ID = userID, Expertise_ID = x.ID });
-                            requests.Add(new Requests() { Users_ID = item.Users_ID, VolunteeringTask_ID = volunteeringTask.ID, status = "Pending" });
+                            foreach (var n in _context.Users)
+                            {
+                                if (n.ID == item.Users_ID)
+                                {
+                                    location = n.Postal_Code + ", " + n.street + ", " + n.City;
+
+                                    requestDistUri = string.Format("https://maps.googleapis.com/maps/api/distancematrix/xml?key={2}&units=imperial&origins={1}&destinations={0}&sensor=false", Uri.EscapeDataString(location), Uri.EscapeDataString(address), "AIzaSyDlmElDRET9npkWNPAQG6DwvYVi2YVHYF0");
+
+                                    WebRequest distRequest = WebRequest.Create(requestDistUri);
+                                    WebResponse distResponse = distRequest.GetResponse();
+
+                                    XDocument distXdoc = XDocument.Load(distResponse.GetResponseStream());
+
+                                    XElement distResult = distXdoc.Element("DistanceMatrixResponse").Element("row");
+                                    XElement distance = distResult.Element("element").Element("distance").Element("value");
+
+                                    if (int.Parse(distance.Value) <= 6437)//approximately 4 miles
+                                    {
+                                        //se.Add(new SelectedExpertise() { Users_ID = userID, Expertise_ID = x.ID });
+                                        requests.Add(new Requests() { Users_ID = item.Users_ID, VolunteeringTask_ID = volunteeringTask.ID, status = "Pending" });
+
+                                        try
+                                        {
+                                            var senderEmail = new MailAddress("tstprojectmail@gmail.com", "VolMngSystms");
+                                            var receiverEmail = new MailAddress(n.Email, n.Forename);
+                                            var password = "Passwod1234?";
+                                            var sub = "Volunteering job nearby: " + volunteeringTask.Title;
+                                            var body = "A volunteering job was posted where a volunteer with your experise is needed." +
+                                                "Discription of task: " + volunteeringTask.Description;
+
+                                            SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
+                                            client.EnableSsl = true;
+                                            //client.Timeout = 100000;
+                                            client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                                            client.UseDefaultCredentials = false;
+                                            client.Credentials = new NetworkCredential(senderEmail.Address, password);
+                                            //var smtp = new SmtpClient
+                                            //{
+                                            //    Host = "smtp.gmail.com",
+                                            //    Port = 587,
+                                            //    EnableSsl = true,
+                                            //    DeliveryMethod = SmtpDeliveryMethod.Network,
+                                            //    UseDefaultCredentials = false,
+                                            //    Credentials = new NetworkCredential(senderEmail.Address, password)
+                                            //};
+                                            MailMessage mailMessage = new MailMessage(senderEmail.Address, receiverEmail.Address, sub, body);
+                                            client.Send(mailMessage);
+
+                                            //using (var mess = new MailMessage(senderEmail, receiverEmail)
+                                            //{
+                                            //    Subject = "Volunteering job nearby: " + volunteeringTask.Title,
+                                            //    Body = "A volunteering job was posted where a volunteer with your experise is needed." +
+                                            //    "Discription of task: " + volunteeringTask.Description
+                                            //})
+                                            //{
+                                            //    smtp.Send(mess);
+                                            //}
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            ViewBag.Error = "Some Error";
+                                        }
+
+                                    }
+
+                                }
+                            }
                         }
                     }
                     foreach (var n in requests)

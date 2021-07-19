@@ -8,6 +8,13 @@ namespace VolunteerMngSystm.Models
 {
     public class VolunteeringTask
     {
+
+        public VolunteeringTask()
+        {
+            Date_of_Task = DateTime.Now;
+            Time_of_Task = DateTime.Now;
+        }
+
         public int ID { get; set; }
         public int Organisation_ID { get; set; }
         public string Title { get; set; }
@@ -16,6 +23,7 @@ namespace VolunteerMngSystm.Models
         public DateTime Date_of_Task { get; set; }
         public DateTime Time_of_Task { get; set; }
         public string Street { get; set; }
+        public string City { get; set; }
         public string Postal_Code { get; set; }
         public ICollection<Users> Volunteers { get; set; }
         public Organisations Organisations { get; set; }
