@@ -9,14 +9,9 @@ namespace VolunteerMngSystm.Models
 {
     public class Requests
     {
-        public Requests()
-        {
-            accVolNum = 0;
-        }
         public int VolunteeringTask_ID { get; set; }
         public int Users_ID { get; set; }
         public string status { get; set; }
-        public int accVolNum { get; set; }
         public VolunteeringTask VolunteeringTask { get; set; }
         public Users Users { get; set; }
     }

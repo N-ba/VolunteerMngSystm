@@ -373,10 +373,9 @@ namespace VolunteerMngSystm.Controllers
             return View(await _context.Tasks.ToListAsync());
         }
 
-        public async Task<IActionResult> TaskAccesptedAsync(int? id, int usrId)
+        public async Task<IActionResult> TaskAccespted(int? id, int usrId)
         {
 
-            int accVolunteers = 0;
             VolunteeringTask task = new VolunteeringTask();
 
             foreach (var item in _context.Tasks)
@@ -391,41 +390,24 @@ namespace VolunteerMngSystm.Controllers
             {
                 if (item.VolunteeringTask_ID == id && item.Users_ID == usrId)
                 {
-                    item.accVolNum += 1;
-                    accVolunteers = item.accVolNum;
+                    task.accVolNum += 1;
                     item.status = "Accepted";
                 }
             }
 
-
-
-            //Add thid code after you add the status to the volunteering tasks model.
-            if (accVolunteers == task.numOfVols)
+            if (task.accVolNum == task.numOfVols)
             {
-                //task.status = "Accepted";
+                task.status = "Accepted";
+                // NEW CODE
+                foreach(var item in _context.Requests)
+                {
+                    if (item.VolunteeringTask_ID == id && item.status == "Pending")
+                    {
+                        _context.Requests.Remove(item);
+                    }
+                }
+                // NEW CODE
             }
-
-            //var requests = _context.Requests;
-            //foreach (var item in _context.Tasks)
-            //{
-            //    if (item.ID == id)
-            //    {
-            //        foreach (var n in requests)
-            //        {
-            //            if (item.ID == n.VolunteeringTask_ID && n.status != "Accepted")
-            //            {
-            //                if (n.accVolNum < item.numOfVols)
-            //                {
-            //                    n.accVolNum += 1;
-            //                }
-            //                else
-            //                {
-            //                    n.status = "Accepted";
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
             await _context.SaveChangesAsync();
 
             //return RedirectToAction(nameof(VolTaskList));
@@ -444,7 +426,7 @@ namespace VolunteerMngSystm.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateTask(/*[Bind("Description,Title,Date,Time,Street,Postal_Code")]*/ VolunteeringTask volunteeringTask)
+        public async Task<IActionResult> CreateTask(/*[Bind("Title,Description,numOfVols,Date_of_Task,Time_of_Task,End_Time_of_Task,Expertise_ID,Street,Postal_Code")]*/ VolunteeringTask volunteeringTask)
         {
             try
             {
@@ -474,8 +456,8 @@ namespace VolunteerMngSystm.Controllers
                         if (n == "UK")
                         {
                             validAddress = true;
-                            volunteeringTask.Latitude = Double.Parse(locationElement.Element("lat").Value);
-                            volunteeringTask.Longitude = Double.Parse(locationElement.Element("lng").Value);
+                            //volunteeringTask.Latitude = Double.Parse(locationElement.Element("lat").Value);
+                            //volunteeringTask.Longitude = Double.Parse(locationElement.Element("lng").Value);
                         }
                     }
                     if (!validAddress)
