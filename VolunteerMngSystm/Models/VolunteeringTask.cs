@@ -13,6 +13,7 @@ namespace VolunteerMngSystm.Models
         {
             Date_of_Task = DateTime.Now;
             Time_of_Task = DateTime.Now;
+            numOfVols = 1;
         }
 
         public int ID { get; set; }
@@ -20,8 +21,10 @@ namespace VolunteerMngSystm.Models
         public string Title { get; set; }
         public string Description { get; set; }
         public int Expertise_ID { get; set; }
+        public int numOfVols { get; set; }
         public DateTime Date_of_Task { get; set; }
         public DateTime Time_of_Task { get; set; }
+        public DateTime End_Time_of_Task { get; set; }
         public string Street { get; set; }
         public string City { get; set; }
         public string Postal_Code { get; set; }
@@ -32,18 +35,5 @@ namespace VolunteerMngSystm.Models
 
         [NotMapped]
         public List<Expertise> ExperiseList { get; set; }
-
-        public void GetVolunteers(List<Users> users)
-        {
-
-            Volunteers = users;
-            //foreach (Users user in Volunteers)
-            //{
-            //   for(int i = 0; i < 7; i++)
-            //    {
-
-            //    }
-            //}
-        }
     }
 }

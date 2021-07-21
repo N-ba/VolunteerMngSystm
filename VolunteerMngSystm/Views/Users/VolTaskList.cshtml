@@ -96,7 +96,7 @@
                     </td>*@
                 <td>
                     @*<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |*@
-                    <a asp-action="VolTaskDetails" asp-route-id="@item.ID">Details</a> @*|
+                    <a asp-action="VolTaskDetails" asp-route-id="@item.ID" asp-route-usrId="@ViewBag.usrId">Details</a> @*|
                         <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>*@
                 </td>
             </tr>

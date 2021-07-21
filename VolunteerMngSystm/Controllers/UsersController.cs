@@ -52,12 +52,14 @@ namespace VolunteerMngSystm.Controllers
             else if (users != null && orgs == null)
             {
                 userID = users.ID;
-                return RedirectToAction(nameof(VolTaskList));
+                // VolTaskList(users.ID);
+                return RedirectToAction("VolTaskList", new { id = users.ID });
             }
             else
             {
                 orgID = orgs.ID;
-                return RedirectToAction(nameof(OrgHome));
+                //return RedirectToAction(nameof(OrgHome));
+                return RedirectToAction("OrgHome", new { id = orgs.ID });
             }
 
 
@@ -93,7 +95,7 @@ namespace VolunteerMngSystm.Controllers
             return View(users);
         }
 
-        public async Task<IActionResult> VolTaskDetails(int? id)
+        public async Task<IActionResult> VolTaskDetails(int? id, int usrId)
         {
             if (id == null)
             {
@@ -107,6 +109,7 @@ namespace VolunteerMngSystm.Controllers
                 return NotFound();
             }
 
+            ViewBag.usrId = usrId;
             return View(task);
         }
 
@@ -126,14 +129,6 @@ namespace VolunteerMngSystm.Controllers
 
             return View(task);
         }
-
-        //public IActionResult UserExperiseViewModel()
-        //{
-        //    UserExperiseViewModel Vm = new UserExperiseViewModel();
-        //    Vm.allSelectedExpertise = _context.SelectedExpertises.ToList<SelectedExpertise>();
-        //    Vm.allUsers = _context.Users.ToList<Users>();
-        //    return View(Vm);
-        //}
 
         // GET: Users/Create
         public IActionResult Create()
@@ -334,7 +329,7 @@ namespace VolunteerMngSystm.Controllers
             return View();
         }
 
-        public IActionResult VolTaskList()
+        public IActionResult VolTaskList(int? id)
         {
             var userTasksIds = new List<int>();
             var userTask = new List<VolunteeringTask>();
@@ -354,6 +349,7 @@ namespace VolunteerMngSystm.Controllers
                         userTask.Add(n);
                     }
                 }
+                ViewBag.usrId = userID;
             }
             return View(userTask);
         }
@@ -375,6 +371,65 @@ namespace VolunteerMngSystm.Controllers
         public async Task<IActionResult> PreviousTaskList()
         {
             return View(await _context.Tasks.ToListAsync());
+        }
+
+        public async Task<IActionResult> TaskAccesptedAsync(int? id, int usrId)
+        {
+
+            int accVolunteers = 0;
+            VolunteeringTask task = new VolunteeringTask();
+
+            foreach (var item in _context.Tasks)
+            {
+                if (item.ID == id)
+                {
+                    task = item;
+                }
+            }
+
+            foreach (var item in _context.Requests)
+            {
+                if (item.VolunteeringTask_ID == id && item.Users_ID == usrId)
+                {
+                    item.accVolNum += 1;
+                    accVolunteers = item.accVolNum;
+                    item.status = "Accepted";
+                }
+            }
+
+
+
+            //Add thid code after you add the status to the volunteering tasks model.
+            if (accVolunteers == task.numOfVols)
+            {
+                //task.status = "Accepted";
+            }
+
+            //var requests = _context.Requests;
+            //foreach (var item in _context.Tasks)
+            //{
+            //    if (item.ID == id)
+            //    {
+            //        foreach (var n in requests)
+            //        {
+            //            if (item.ID == n.VolunteeringTask_ID && n.status != "Accepted")
+            //            {
+            //                if (n.accVolNum < item.numOfVols)
+            //                {
+            //                    n.accVolNum += 1;
+            //                }
+            //                else
+            //                {
+            //                    n.status = "Accepted";
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+            await _context.SaveChangesAsync();
+
+            //return RedirectToAction(nameof(VolTaskList));
+            return RedirectToAction("VolTaskList", new { id = usrId });
         }
 
         // GET: Users/CreateTask
