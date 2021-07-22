@@ -63,5 +63,5 @@
 </div>
 <div>
     <a asp-action="TaskAccespted" asp-route-id="@Model.ID" asp-route-usrId="@ViewBag.usrId" class="btn btn-success" >Accept</a> |
-    <a asp-action="VolTaskList">Back to List</a>
+    <a asp-action="VolTaskList"asp-route-id="@ViewBag.usrId" >Back to List</a>
 </div>

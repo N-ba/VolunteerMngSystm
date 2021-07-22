@@ -17,7 +17,7 @@ namespace VolunteerMngSystm.Controllers
 {
     public class UsersController : Controller
     {
-        static int userID;
+        //static int userID;
         static int orgID;
         private readonly MyContext _context;
 
@@ -51,7 +51,7 @@ namespace VolunteerMngSystm.Controllers
             }
             else if (users != null && orgs == null)
             {
-                userID = users.ID;
+                //userID = users.ID;
                 // VolTaskList(users.ID);
                 return RedirectToAction("VolTaskList", new { id = users.ID });
             }
@@ -67,7 +67,7 @@ namespace VolunteerMngSystm.Controllers
 
         public IActionResult Logout()
         {
-            userID = -1;
+            //userID = -1;
             orgID = -1;
             return RedirectToAction(nameof(Login));
         }
@@ -80,20 +80,20 @@ namespace VolunteerMngSystm.Controllers
             //    return NotFound();
             //}
 
-            if (userID == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
             var users = await _context.Users
-                .FirstOrDefaultAsync(m => m.ID == userID);
+                .FirstOrDefaultAsync(m => m.ID == id);
             if (users == null)
             {
                 return NotFound();
             }
 
             return View(users);
-        }
+        }//I don't think this is ever used...
 
         public async Task<IActionResult> VolTaskDetails(int? id, int usrId)
         {
@@ -226,13 +226,13 @@ namespace VolunteerMngSystm.Controllers
                     {
                         _context.Add(users);
                         await _context.SaveChangesAsync();
-                        userID = users.ID;
+                        //userID = users.ID;
 
                         foreach (var x in UEVM.AvailableSubjects)
                         {
                             if (x.isChecked == true)
                             {
-                                se.Add(new SelectedExpertise() { Users_ID = userID, Expertise_ID = x.ID });
+                                se.Add(new SelectedExpertise() { Users_ID = users.ID, Expertise_ID = x.ID });
                             }
                         }
                         foreach (var x in se)
@@ -241,7 +241,8 @@ namespace VolunteerMngSystm.Controllers
                             await _context.SaveChangesAsync();
                         }
 
-                        return RedirectToAction(nameof(VolTaskList));
+                        //return RedirectToAction(nameof(VolTaskList));
+                        return RedirectToAction("VolTaskList", new { id = users.ID });
                     }
                     else
                     {
@@ -274,7 +275,8 @@ namespace VolunteerMngSystm.Controllers
                     "see your system administrator.");
             }
 
-            return RedirectToAction(nameof(VolTaskList));
+            //return RedirectToAction(nameof(VolTaskList));
+            return RedirectToAction("VolTaskList", new { id = users.ID });
         }
         // GET: Users/OrgReg
         public IActionResult OrgReg()
@@ -335,7 +337,7 @@ namespace VolunteerMngSystm.Controllers
             var userTask = new List<VolunteeringTask>();
             foreach (var n in _context.Requests)
             {
-                if (userID == n.Users_ID)
+                if (id == n.Users_ID)
                 {
                     userTasksIds.Add(n.VolunteeringTask_ID);
                 }
@@ -349,7 +351,7 @@ namespace VolunteerMngSystm.Controllers
                         userTask.Add(n);
                     }
                 }
-                ViewBag.usrId = userID;
+                ViewBag.usrId = id;
             }
             return View(userTask);
         }
