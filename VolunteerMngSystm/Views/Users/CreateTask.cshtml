@@ -11,7 +11,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="CreateTask">
+        <form asp-action="CreateTask" asp-route-orgId="@ViewBag.orgId">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Title" style="font-weight: bold;" class="control-label"></label>

@@ -14,13 +14,13 @@
         <form asp-action="OrgReg">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <a class="btn btn-outline-info" asp-area="" asp-controller="Users" asp-action="CreateTask">Create new Task</a>
+                <a class="btn btn-outline-info" asp-area="" asp-controller="Users" asp-action="CreateTask" asp-route-orgId="@ViewBag.orgId">Create new Task</a>
             </div>
             <div class="form-group">
-                <a class="btn btn-outline-info" asp-area="" asp-controller="Users" asp-action="ActiveTaskList">Active Tasks</a>
+                <a class="btn btn-outline-info" asp-area="" asp-controller="Users" asp-action="ActiveTaskList" asp-route-orgId="@ViewBag.orgId">Active Tasks</a>
             </div>
             <div class="form-group">
-                <a class="btn btn-outline-info" asp-area="" asp-controller="Users" asp-action="PreviousTaskList">Previouse Tasks</a>
+                <a class="btn btn-outline-info" asp-area="" asp-controller="Users" asp-action="PreviousTaskList" asp-route-orgId="@ViewBag.orgId">Previouse Tasks</a>
             </div>
         </form>
     </div>

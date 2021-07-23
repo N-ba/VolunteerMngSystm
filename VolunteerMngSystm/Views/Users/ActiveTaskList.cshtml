@@ -26,9 +26,9 @@
                 @Html.DisplayNameFor(model => model.Time_of_Task)
             </th>
             <th>
-                    @Html.DisplayNameFor(model => model.End_Time_of_Task)
-                </th>
-                @*<th>
+                @Html.DisplayNameFor(model => model.End_Time_of_Task)
+            </th>
+            @*<th>
                     @Html.DisplayNameFor(model => model.numOfVols)
                 </th>
                 <th>
@@ -40,7 +40,7 @@
                 <th>
                     @Html.DisplayNameFor(model => model.Postal_Code)
                 </th>*@
-                @*<th>
+            @*<th>
                     @Html.DisplayNameFor(model => model.City)
                 </th>
                 <th>
@@ -68,10 +68,10 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Time_of_Task)
                 </td>
-                 <td>
-                        @Html.DisplayFor(modelItem => item.End_Time_of_Task)
-                    </td>
-                    @*<td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.End_Time_of_Task)
+                </td>
+                @*<td>
                         @Html.DisplayFor(modelItem => item.numOfVols)
                     </td>
                     <td>
@@ -83,7 +83,7 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Postal_Code)
                     </td>*@
-                    @*<td>
+                @*<td>
                         @Html.DisplayFor(modelItem => item.Postal_Code)
                     </td>
                     <td>
@@ -102,3 +102,4 @@
 {
     <p>No Volunteering tasks are set </p>
 }
+<a asp-action="OrgHome" asp-route-orgId="@ViewBag.orgId">Back</a>

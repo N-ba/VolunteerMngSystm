@@ -18,7 +18,7 @@ namespace VolunteerMngSystm.Controllers
     public class UsersController : Controller
     {
         //static int userID;
-        static int orgID;
+        //static int orgID;
         private readonly MyContext _context;
 
         public UsersController(MyContext context)
@@ -57,9 +57,9 @@ namespace VolunteerMngSystm.Controllers
             }
             else
             {
-                orgID = orgs.ID;
+                //orgID = orgs.ID;
                 //return RedirectToAction(nameof(OrgHome));
-                return RedirectToAction("OrgHome", new { id = orgs.ID });
+                return RedirectToAction("OrgHome", new { orgId = orgs.ID });
             }
 
 
@@ -68,7 +68,7 @@ namespace VolunteerMngSystm.Controllers
         public IActionResult Logout()
         {
             //userID = -1;
-            orgID = -1;
+            //orgID = -1;
             return RedirectToAction(nameof(Login));
         }
 
@@ -302,8 +302,12 @@ namespace VolunteerMngSystm.Controllers
                     {
                         _context.Add(organisations);
                         await _context.SaveChangesAsync();
-                        orgID = organisations.ID;
-                        return RedirectToAction(nameof(OrgHome));
+                        //orgID = organisations.ID;
+
+                        return RedirectToAction("OrgHome", new { orgId = organisations.ID });
+
+
+                        //return RedirectToAction(nameof(OrgHome));
                     }
                 }
                 else
@@ -326,8 +330,9 @@ namespace VolunteerMngSystm.Controllers
         }
 
         // GET: Users/Create
-        public IActionResult OrgHome()
+        public IActionResult OrgHome(int? orgId)
         {
+            ViewBag.orgId = orgId;
             return View();
         }
 
@@ -356,23 +361,34 @@ namespace VolunteerMngSystm.Controllers
             return View(userTask);
         }
 
-        public IActionResult ActiveTaskList()
+        //Get action method
+        public IActionResult ActiveTaskList(int? orgId)
         {
             var tasks = new List<VolunteeringTask>();
             foreach (var n in _context.Tasks)
             {
-                if (orgID == n.Organisation_ID)
+                if (orgId == n.Organisation_ID)
                 {
                     tasks.Add(n);
                 }
             }
+            ViewBag.orgId = orgId;
             return View(tasks);
             //return View(await _context.Tasks.ToListAsync());
         }
 
-        public async Task<IActionResult> PreviousTaskList()
+        public async Task<IActionResult> PreviousTaskList(int? orgId)
         {
-            return View(await _context.Tasks.ToListAsync());
+            var tasks = new List<VolunteeringTask>();
+            foreach (var n in _context.Tasks)
+            {
+                if (orgId == n.Organisation_ID)
+                {
+                    tasks.Add(n);
+                }
+            }
+            ViewBag.orgId = orgId;
+            return View(tasks);
         }
 
         public async Task<IActionResult> TaskAccespted(int? id, int usrId)
@@ -417,18 +433,18 @@ namespace VolunteerMngSystm.Controllers
         }
 
         // GET: Users/CreateTask
-        public IActionResult CreateTask(/*int id = 0*/)
+        public IActionResult CreateTask(int? orgId)
         {
             VolunteeringTask volTask = new VolunteeringTask();
             volTask.ExperiseList = _context.Expertises.ToList<Expertise>();
 
-
+            ViewBag.orgId = orgId;
             return View(volTask);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateTask(/*[Bind("Title,Description,numOfVols,Date_of_Task,Time_of_Task,End_Time_of_Task,Expertise_ID,Street,Postal_Code")]*/ VolunteeringTask volunteeringTask)
+        public async Task<IActionResult> CreateTask(VolunteeringTask volunteeringTask, int orgId)
         {
             try
             {
@@ -476,7 +492,7 @@ namespace VolunteerMngSystm.Controllers
                         return View(Vm);
                     }
 
-                    volunteeringTask.Organisation_ID = orgID;
+                    volunteeringTask.Organisation_ID = orgId;
                     _context.Add(volunteeringTask);
                     await _context.SaveChangesAsync();
 
@@ -565,7 +581,7 @@ namespace VolunteerMngSystm.Controllers
                     //volunteeringTask.GetVolunteers(usersList);
                     // NEW CODE FOR MAKING THE VOLUNTEERS CONNECTED TO A SPECIFIC TASK 
 
-                    return await GetVolunteers(volunteeringTask.ID);
+                    return await GetVolunteers(volunteeringTask.ID, volunteeringTask.Organisation_ID);
                 }
             }
             catch (DbUpdateException e)
@@ -580,7 +596,7 @@ namespace VolunteerMngSystm.Controllers
 
         }
 
-        public async Task<IActionResult> GetVolunteers(int? id)
+        public async Task<IActionResult> GetVolunteers(int? id, int? orgId)
         {
             if (id == null)
             {
@@ -593,7 +609,10 @@ namespace VolunteerMngSystm.Controllers
                 return NotFound();
             }
             //return View(tasks);
-            return RedirectToAction(nameof(OrgHome));
+            return RedirectToAction("OrgHome", new { orgId = orgId });
+
+
+            //return RedirectToAction(nameof(OrgHome));
         }
         public async Task<IActionResult> OrgEdit(int? id)
         {
