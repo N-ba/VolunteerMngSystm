@@ -6,8 +6,11 @@
 }
 
 <h1>Task Details</h1>
-
 <div>
+    @if (ViewBag.Status == "Accepted")
+    {
+        <h4 class="text-success">Accepted</h4>
+    }
     <h4>Users</h4>
     <hr />
     <dl class="row">
@@ -15,7 +18,7 @@
             Organised by
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Volunteers)
+            @Html.ViewBag.OrgName
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Title)
@@ -30,16 +33,24 @@
             @Html.DisplayFor(model => model.Description)
         </dd>
         <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DateTime_of_Task)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DateTime_of_Task)
+        </dd>
+
+        @*<dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Time_of_Task)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Time_of_Task)
-        </dd>
+        </dd>*@
+
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Date_of_Task)
+            @Html.DisplayNameFor(model => model.End_Time_of_Task)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Date_of_Task)
+            @Html.DisplayFor(model => model.End_Time_of_Task)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Street)
@@ -53,15 +64,22 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Postal_Code)
         </dd>
-        @*<dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Volunteers)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.MapLink)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Volunteers)
-        </dd>*@
+            <a href="@Html.DisplayFor(model => model.MapLink)" target="_blank">Directions</a>
+        </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="TaskAccespted" asp-route-id="@Model.ID" asp-route-usrId="@ViewBag.usrId" class="btn btn-success" >Accept</a> |
-    <a asp-action="VolTaskList"asp-route-id="@ViewBag.usrId" >Back to List</a>
+    @if (ViewBag.Status == "Pending")
+    {
+        <a asp-action="TaskAccespted" asp-route-id="@Model.ID" asp-route-usrId="@ViewBag.usrId" class="btn btn-success">Accept</a>
+    }
+    else if (ViewBag.Status == "Accepted")
+    {
+        <button asp-action="TaskAccespted" asp-route-id="@Model.ID" asp-route-usrId="@ViewBag.usrId" class="btn btn-success" disabled="disabled">Accept</button>
+    }
+    <a asp-action="VolTaskList" asp-route-id="@ViewBag.usrId">Back to List</a>
 </div>

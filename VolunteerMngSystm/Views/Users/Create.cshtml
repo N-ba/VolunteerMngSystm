@@ -47,7 +47,7 @@
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div><br /><br />
             <div class="form-group">
-                <label asp-for="Personal_ID" style="font-weight: bold;" style="font-weight: bold;" class="control-label">Verification ID</label>
+                <label asp-for="Personal_ID" style="font-weight: bold;" class="control-label">Verification ID</label>
                 <input asp-for="Personal_ID" type="file" accept="image/* " />
                 <span asp-validation-for="Personal_ID" class="text-danger"></span>
             </div><br />
@@ -72,25 +72,22 @@
                 </table>
             </div>
             <div class="form-group">
-                <label asp-for="street" style="font-weight: bold;" class="control-label"></label>
-                <input asp-for="street" class="form-control" />
-                <span asp-validation-for="street" class="text-danger"></span>
-                <span asp-validation-for="street" class="text-danger">@ViewBag.wrongAddress</span>
-
-            </div>
-            <div class="form-group">
                 <label asp-for="City" style="font-weight: bold;" class="control-label"></label>
                 <input asp-for="City" class="form-control" />
                 <span asp-validation-for="City" class="text-danger"></span>
                 <span asp-validation-for="City" class="text-danger">@ViewBag.wrongAddress</span>
-
+            </div>
+            <div class="form-group">
+                <label asp-for="street" style="font-weight: bold;" class="control-label"></label>
+                <input asp-for="street" class="form-control" />
+                <span asp-validation-for="street" class="text-danger"></span>
+                <span asp-validation-for="street" class="text-danger">@ViewBag.wrongAddress</span>
             </div>
             <div class="form-group">
                 <label asp-for="Postal_Code" style="font-weight: bold;" class="control-label">Postal Code</label>
                 <input asp-for="Postal_Code" class="form-control" />
                 <span asp-validation-for="Postal_Code" class="text-danger"></span>
                 <span asp-validation-for="Postal_Code" class="text-danger">@ViewBag.wrongAddress</span>
-
             </div><br /><br />
             <div class="form-group">
                 <label asp-for="Phone_number" style="font-weight: bold;" class="control-label">Phone number</label>

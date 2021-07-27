@@ -108,12 +108,25 @@ namespace VolunteerMngSystm.Controllers
             {
                 return NotFound();
             }
-
+            foreach (var n in _context.Organisations)
+            {
+                if (n.ID == usrId)
+                {
+                    ViewBag.OrgName = n.Organisation_name;
+                }
+            }
+            foreach (var n in _context.Requests)
+            {
+                if (n.Users_ID == usrId && n.VolunteeringTask_ID == id)
+                {
+                    ViewBag.Status = n.status;
+                }
+            }
             ViewBag.usrId = usrId;
             return View(task);
         }
 
-        public async Task<IActionResult> OrgTaskDetails(int? id)
+        public async Task<IActionResult> OrgTaskDetails(int? id, int? orgId)
         {
             if (id == null)
             {
@@ -126,7 +139,7 @@ namespace VolunteerMngSystm.Controllers
             {
                 return NotFound();
             }
-
+            ViewBag.orgId = orgId;
             return View(task);
         }
 
@@ -146,19 +159,6 @@ namespace VolunteerMngSystm.Controllers
                 isChecked = false
             }).ToList();
             return View(Vm);
-
-
-            //var item = _context.Expertises.Select(e => new CheckBoxItems()
-            //{
-            //    ID = e.ID,
-            //    Subject = e.Subject,
-            //    isChecked = false
-            //}).ToList();
-            //var Vm = new UserExpertiseViewModel()
-            //{
-            //    AvailableSubjects = item
-            //};
-            //return View(Vm);
         }
 
         // POST: Users/Create
@@ -174,8 +174,6 @@ namespace VolunteerMngSystm.Controllers
                 if (ModelState.IsValid)
                 {
                     string address = users.Postal_Code + ", " + users.street + ", " + users.City;
-
-                    string beginAddress = "University of hull";
 
                     string requestUri = string.Format("https://maps.googleapis.com/maps/api/geocode/xml?key={1}&address={0}&sensor=false", Uri.EscapeDataString(address), "AIzaSyDlmElDRET9npkWNPAQG6DwvYVi2YVHYF0");
 
@@ -338,6 +336,7 @@ namespace VolunteerMngSystm.Controllers
 
         public IActionResult VolTaskList(int? id)
         {
+            var today = DateTime.Now;
             var userTasksIds = new List<int>();
             var userTask = new List<VolunteeringTask>();
             foreach (var n in _context.Requests)
@@ -351,7 +350,7 @@ namespace VolunteerMngSystm.Controllers
             {
                 for (int i = 0; i < userTasksIds.Count; i++)
                 {
-                    if (n.ID == userTasksIds[i])
+                    if (n.ID == userTasksIds[i] && (n.DateTime_of_Task.Date > today.Date || (n.DateTime_of_Task.Date == today.Date && n.End_Time_of_Task > today.TimeOfDay)))
                     {
                         userTask.Add(n);
                     }
@@ -364,10 +363,11 @@ namespace VolunteerMngSystm.Controllers
         //Get action method
         public IActionResult ActiveTaskList(int? orgId)
         {
+            var today = DateTime.Now;
             var tasks = new List<VolunteeringTask>();
             foreach (var n in _context.Tasks)
             {
-                if (orgId == n.Organisation_ID)
+                if (orgId == n.Organisation_ID && (n.DateTime_of_Task.Date > today.Date || (n.DateTime_of_Task.Date == today.Date && n.End_Time_of_Task > today.TimeOfDay)))
                 {
                     tasks.Add(n);
                 }
@@ -379,16 +379,55 @@ namespace VolunteerMngSystm.Controllers
 
         public async Task<IActionResult> PreviousTaskList(int? orgId)
         {
+            var today = DateTime.Now;
             var tasks = new List<VolunteeringTask>();
             foreach (var n in _context.Tasks)
             {
-                if (orgId == n.Organisation_ID)
+                if (orgId == n.Organisation_ID && n.DateTime_of_Task.Date >= today.Date /*&& n.End_Time_of_Task <= today.TimeOfDay*/)
                 {
-                    tasks.Add(n);
+                    if (n.DateTime_of_Task.Date == today.Date && n.End_Time_of_Task < today.TimeOfDay)
+                    {
+                        n.status = "Ended";
+                        tasks.Add(n);
+                    }
+
                 }
             }
+            await _context.SaveChangesAsync();
             ViewBag.orgId = orgId;
             return View(tasks);
+        }
+
+        public async Task<IActionResult> VolPreviousTasks(int? id)
+        {
+            var today = DateTime.Now;
+            var userTasksIds = new List<int>();
+            var userTask = new List<VolunteeringTask>();
+            foreach (var n in _context.Requests)
+            {
+                if (id == n.Users_ID && n.status == "Accepted")
+                {
+                    userTasksIds.Add(n.VolunteeringTask_ID);
+                }
+            }
+            foreach (var n in _context.Tasks)
+            {
+                for (int i = 0; i < userTasksIds.Count; i++)
+                {
+                    if (n.ID == userTasksIds[i] && n.DateTime_of_Task.Date >= today.Date /*&& n.End_Time_of_Task <= today.TimeOfDay*/)
+                    {
+                        if (n.DateTime_of_Task.Date == today.Date && n.End_Time_of_Task < today.TimeOfDay)
+                        {
+                            n.status = "Ended";
+                            userTask.Add(n);
+                        }
+
+                    }
+                }
+                ViewBag.usrId = id;
+            }
+            await _context.SaveChangesAsync();
+            return View(userTask);
         }
 
         public async Task<IActionResult> TaskAccespted(int? id, int usrId)
@@ -417,7 +456,7 @@ namespace VolunteerMngSystm.Controllers
             {
                 task.status = "Accepted";
                 // NEW CODE
-                foreach(var item in _context.Requests)
+                foreach (var item in _context.Requests)
                 {
                     if (item.VolunteeringTask_ID == id && item.status == "Pending")
                     {
@@ -451,7 +490,7 @@ namespace VolunteerMngSystm.Controllers
                 if (ModelState.IsValid)
                 {
                     string address = volunteeringTask.Postal_Code + ", " + volunteeringTask.Street + ", " + volunteeringTask.City;
-
+                    string link = "https://www.google.com/maps/place/"+ Uri.EscapeDataString(address);
                     string location;
 
                     string requestUri = string.Format("https://maps.googleapis.com/maps/api/geocode/xml?key={1}&address={0}&sensor=false", Uri.EscapeDataString(address), "AIzaSyDlmElDRET9npkWNPAQG6DwvYVi2YVHYF0");
@@ -481,18 +520,21 @@ namespace VolunteerMngSystm.Controllers
                     if (!validAddress)
                     {
                         ViewBag.wrongAddress = "Address Invalid";
-                        var item = _context.Expertises.ToList();
-                        UserExpertiseViewModel Vm = new UserExpertiseViewModel();
-                        Vm.AvailableSubjects = item.Select(e => new CheckBoxItems()
-                        {
-                            ID = e.ID,
-                            Subject = e.Subject,
-                            isChecked = false
-                        }).ToList();
-                        return View(Vm);
+                        //var item = _context.Expertises.ToList();
+                        //UserExpertiseViewModel Vm = new UserExpertiseViewModel();
+                        //Vm.AvailableSubjects = item.Select(e => new CheckBoxItems()
+                        //{
+                        //    ID = e.ID,
+                        //    Subject = e.Subject,
+                        //    isChecked = false
+                        //}).ToList();
+                        //return View(Vm);
                     }
+                    //var date = volunteeringTask.End_Time_of_Task;
+                    //volunteeringTask.End_Time_of_Task = date;
 
                     volunteeringTask.Organisation_ID = orgId;
+                    volunteeringTask.MapLink = link;
                     _context.Add(volunteeringTask);
                     await _context.SaveChangesAsync();
 
@@ -532,7 +574,7 @@ namespace VolunteerMngSystm.Controllers
                                             var password = "Passwod1234?";
                                             var sub = "Volunteering job nearby: " + volunteeringTask.Title;
                                             var body = "A volunteering job was posted where a volunteer with your experise is needed." +
-                                                "Discription of task: " + volunteeringTask.Description;
+                                                "Discription of task: \r\n" + volunteeringTask.Description + "\r\n" + link;
 
                                             SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
                                             client.EnableSsl = true;
@@ -581,7 +623,7 @@ namespace VolunteerMngSystm.Controllers
                     //volunteeringTask.GetVolunteers(usersList);
                     // NEW CODE FOR MAKING THE VOLUNTEERS CONNECTED TO A SPECIFIC TASK 
 
-                    return await GetVolunteers(volunteeringTask.ID, volunteeringTask.Organisation_ID);
+                    return await GetVolunteers(volunteeringTask.ID, volunteeringTask.Organisation_ID, link);
                 }
             }
             catch (DbUpdateException e)
@@ -596,7 +638,7 @@ namespace VolunteerMngSystm.Controllers
 
         }
 
-        public async Task<IActionResult> GetVolunteers(int? id, int? orgId)
+        public async Task<IActionResult> GetVolunteers(int? id, int? orgId, string map)
         {
             if (id == null)
             {
@@ -609,25 +651,80 @@ namespace VolunteerMngSystm.Controllers
                 return NotFound();
             }
             //return View(tasks);
-            return RedirectToAction("OrgHome", new { orgId = orgId });
+            return RedirectToAction("OrgHome", new { orgId = orgId});
 
 
             //return RedirectToAction(nameof(OrgHome));
         }
-        public async Task<IActionResult> OrgEdit(int? id)
+        public async Task<IActionResult> OrgEdit(int? orgId)
+        {
+            if (orgId == null)
+            {
+                return NotFound();
+            }
+
+            var orgs = await _context.Organisations.FindAsync(orgId);
+            if (orgs == null)
+            {
+                return NotFound();
+            }
+            ViewBag.orgId = orgId;
+            return View(orgs);
+        }
+
+        public async Task<IActionResult> TaskEdit(int? id, int? orgId)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var users = await _context.Users.FindAsync(id);
-            if (users == null)
+            var task = await _context.Tasks.FindAsync(id);
+            if (task == null)
             {
                 return NotFound();
             }
-            return View(users);
+            task.ExperiseList = _context.Expertises.ToList<Expertise>();
+            ViewBag.orgId = orgId;
+            return View(task);
         }
+
+        // POST: Users/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost, ActionName("TaskEdit")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TaskEdit(int id, int orgId)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var taskToUpdate = await _context.Tasks.FirstOrDefaultAsync(s => s.ID == id);
+            if (await TryUpdateModelAsync<VolunteeringTask>(
+                taskToUpdate,
+                "",
+                 s => s.Title, s => s.Description, s => s.Expertise_ID, s => s.numOfVols, s => s.accVolNum, s => s.DateTime_of_Task,
+                 s => s.End_Time_of_Task, s => s.Street, s => s.City, s => s.Postal_Code, s => s.status))
+            {
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("OrgHome", new { orgId = orgId }); ;
+                }
+                catch (DbUpdateException /* ex */)
+                {
+                    //Log the error (uncomment ex variable name and write a log.)
+                    ModelState.AddModelError("", "Unable to save changes. " +
+                        "Try again, and if the problem persists, " +
+                        "see your system administrator.");
+                }
+            }
+            ViewBag.orgId = orgId;
+            return View(taskToUpdate);
+        }
+
+
 
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -637,11 +734,25 @@ namespace VolunteerMngSystm.Controllers
                 return NotFound();
             }
 
+
+            //var item = _context.Expertises.ToList();
+            //UserExpertiseViewModel Vm = new UserExpertiseViewModel();
+            //Vm.AvailableSubjects = item.Select(e => new CheckBoxItems()
+            //{
+            //    ID = e.ID,
+            //    Subject = e.Subject,
+            //    isChecked = false
+            //}).ToList();
+            //return View(Vm);
+
+
+
             var users = await _context.Users.FindAsync(id);
             if (users == null)
             {
                 return NotFound();
             }
+            ViewBag.usrId = id;
             return View(users);
         }
 
@@ -650,7 +761,7 @@ namespace VolunteerMngSystm.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id/*, [Bind("ID,Branch_ID,User_name,DOB,Gender,Email,Password,Personal_ID,street,City,Postal_Code,Phone_number")] Users users*/)
+        public async Task<IActionResult> Edit(int id)
         {
             if (id == null)
             {
@@ -676,6 +787,7 @@ namespace VolunteerMngSystm.Controllers
                         "see your system administrator.");
                 }
             }
+            ViewBag.usrId = id;
             return View(userToUpdate);
         }
 

@@ -1,13 +1,11 @@
 ﻿@model IEnumerable<VolunteerMngSystm.Models.VolunteeringTask>
 
 @{
-    Layout = "~/Views/Shared/_OrgLayout.cshtml";
-    ViewData["Title"] = "PreviousTaskList";
+    Layout = "~/Views/Shared/_VolunteerLayout.cshtml";
+    ViewData["Title"] = "PastVolTaskList";
 }
 
-<h1>List of Completed Tasks</h1>
-
-<br />
+<h1>Previous Accepted Tasks</h1>
 @*<p>
         <a asp-action="Create">Create New</a>
     </p>*@
@@ -28,9 +26,9 @@
                     @Html.DisplayNameFor(model => model.Time_of_Task)
                 </th>*@
                 <th>
-                    @Html.DisplayNameFor(model => model.End_Time_of_Task)
-                </th>
-                @*<th>
+                        @Html.DisplayNameFor(model => model.End_Time_of_Task)
+                    </th>
+                    @*<th>
                         @Html.DisplayNameFor(model => model.Email)
                     </th>
                     <th>
@@ -71,13 +69,10 @@
                     @*<td>
                         @Html.DisplayFor(modelItem => item.Time_of_Task)
                     </td>*@
-                    <td>
-                        @Html.DisplayFor(modelItem => item.End_Time_of_Task)
-                    </td>
-                    @* <td>
-                            @Html.DisplayFor(modelItem => item.Email)
+                     <td>
+                            @Html.DisplayFor(modelItem => item.End_Time_of_Task)
                         </td>
-                        <td>
+                        @*<td>
                             @Html.DisplayFor(modelItem => item.Password)
                         </td>
                         <td>
@@ -97,7 +92,7 @@
                         </td>*@
                     <td>
                         @*<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |*@
-                        <a asp-action="OrgTaskDetails" asp-route-id="@item.ID" asp-route-orgId="@ViewBag.orgId">Details</a> @*|
+                        <a asp-action="VolTaskDetails" asp-route-id="@item.ID" asp-route-usrId="@ViewBag.usrId">Details</a> @*|
                             <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>*@
                     </td>
                 </tr>
@@ -105,8 +100,8 @@
         </tbody>
     </table>
 </div>
-    @if (((System.Collections.Generic.List<VolunteerMngSystm.Models.VolunteeringTask>)Model).Count == 0)
-    {
-        <p>No Volunteering tasks are set </p>
-    }
-    <a asp-action="OrgHome" asp-route-orgId="@ViewBag.orgId">Back</a>
+@if (((System.Collections.Generic.List<VolunteerMngSystm.Models.VolunteeringTask>)Model).Count == 0)
+{
+    <p>No previous tasks were accepted </p>
+}
+<a asp-action="VolTaskList" asp-route-id="@ViewBag.usrId">Back</a>

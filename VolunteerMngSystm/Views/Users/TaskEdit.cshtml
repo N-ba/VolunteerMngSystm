@@ -1,18 +1,20 @@
 ﻿@model VolunteerMngSystm.Models.VolunteeringTask
-
 @{
     Layout = "~/Views/Shared/_OrgLayout.cshtml";
-    ViewData["Title"] = "NewTask";
+    ViewData["Title"] = "Edit";
 }
 
-<h1>Creat new Task</h1>
+<h1>Edit</h1>
 
-<h5>As Volunteer</h5>
+<h4>Users</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="CreateTask" asp-route-orgId="@ViewBag.orgId">
+        <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="ID" />
+            <input type="hidden" asp-for="Organisation_ID" />
             <div class="form-group">
                 <label asp-for="Title" style="font-weight: bold;" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
@@ -25,22 +27,22 @@
             </div>
             <div class="form-group">
                 <label asp-for="numOfVols" style="font-weight: bold;" class="control-label"></label>
-                <input asp-for="numOfVols" type="number" class="form-control" />
+                <input asp-for="numOfVols" class="form-control" />
                 <span asp-validation-for="numOfVols" class="text-danger"></span>
             </div>
-            <div class="form-group" id="datetimepicker">
+            <div class="form-group">
                 <label asp-for="DateTime_of_Task" style="font-weight: bold;" class="control-label"></label>
-                <input asp-for="DateTime_of_Task" type="datetime-local" class="form-control" />
+                <input asp-for="DateTime_of_Task" type="date" class="form-control" />
                 <span asp-validation-for="DateTime_of_Task" class="text-danger"></span>
             </div>
             @*<div class="form-group">
             <label asp-for="Time_of_Task" style="font-weight: bold;" class="control-label">Start Time</label>
-            <input asp-for="Time_of_Task" type="time" class="form-control" />
+            <input asp-for="Time_of_Task" type="date" class="form-control" />
             <span asp-validation-for="Time_of_Task" class="text-danger"></span>
         </div>*@
             <div class="form-group">
                 <label asp-for="End_Time_of_Task" style="font-weight: bold;" class="control-label"></label>
-                <input asp-for="End_Time_of_Task" type="time" class="form-control" />
+                <input asp-for="End_Time_of_Task" type="date" class="form-control" />
                 <span asp-validation-for="End_Time_of_Task" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -48,37 +50,31 @@
                 <p>@Html.DropDownListFor(model => model.Expertise_ID, new SelectList(Model.ExperiseList, "ID", "Subject"), "--Select an Expertise--")</p>
             </div>
             <div class="form-group">
-                <label asp-for="City" style="font-weight: bold;" class="control-label"></label>
-                <input asp-for="City" class="form-control" />
-                <span asp-validation-for="City" class="text-danger"></span>
-                <span asp-validation-for="City" class="text-danger">@ViewBag.wrongAddress</span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Street" style="font-weight: bold;" class="control-label"></label>
                 <input asp-for="Street" class="form-control" />
                 <span asp-validation-for="Street" class="text-danger"></span>
-                <span asp-validation-for="Street" class="text-danger">@ViewBag.wrongAddress</span>
+            </div>
+            <div class="form-group">
+                <label asp-for="City" style="font-weight: bold;" class="control-label"></label>
+                <input asp-for="City" class="form-control" />
+                <span asp-validation-for="City" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Postal_Code" style="font-weight: bold;" class="control-label"></label>
                 <input asp-for="Postal_Code" class="form-control" />
                 <span asp-validation-for="Postal_Code" class="text-danger"></span>
-                <span asp-validation-for="Postal_Code" class="text-danger">@ViewBag.wrongAddress</span>
-            </div>
+            </div><br /><br />
             <div class="form-group">
-                <input type="submit" value="Creat Task" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
-
-            <script>
-                $(function () {
-                    $('#datetimepicker').datetimepicker({
-                        minDate: new Date()
-                    });
-                });
-            </script>
         </form>
     </div>
 </div>
+
+<div>
+    <a asp-action="ActiveTaskList" asp-route-id="@Model.ID" asp-route-orgId="@ViewBag.orgId">Back to List</a>
+</div>
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

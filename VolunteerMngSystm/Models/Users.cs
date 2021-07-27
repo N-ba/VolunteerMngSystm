@@ -11,7 +11,7 @@ namespace VolunteerMngSystm.Models
     {
         public Users()
         {
-            DOB = DateTime.Now;
+            DOB = DateTime.Today;
         }
         public int ID { get; set; }
         [Required]

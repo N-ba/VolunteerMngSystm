@@ -6,9 +6,19 @@
 }
 
 <h1>Task Details</h1>
-
 <div>
-    <h4>Task Detail</h4>
+    @if (Model.status == "Accepted")
+    {
+        <h4 class="text-success">@Html.DisplayFor(model => model.status)</h4>
+    }
+    else if (Model.status == "Pending")
+    {
+        <h4 class="text-warning">@Html.DisplayFor(model => model.status)</h4>
+    }
+    else if (Model.status == "Ended")
+    {
+        <h4 class="text-muted">@Html.DisplayFor(model => model.status)</h4>
+    }
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -24,17 +34,17 @@
             @Html.DisplayFor(model => model.Description)
         </dd>
         <dt class="col-sm-2">
-            <label>Date</label>
+            @Html.DisplayNameFor(model => model.DateTime_of_Task)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Date_of_Task)
+            @Html.DisplayFor(model => model.DateTime_of_Task)
         </dd>
-        <dt class="col-sm-2">
-            <label>Start Time</label>
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Time_of_Task)
-        </dd>
+        @*<dt class="col-sm-2">
+                <label>Start Time</label>
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Time_of_Task)
+            </dd>*@
         <dt class="col-sm-2">
             <label>End Time</label>
         </dt>
@@ -42,10 +52,16 @@
             @Html.DisplayFor(model => model.End_Time_of_Task)
         </dd>
         <dt class="col-sm-2">
-            <label>Number of volunteers needed</label>
+            @Html.DisplayNameFor(model => model.numOfVols)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.numOfVols)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.accVolNum)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.accVolNum)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Street)
@@ -62,6 +78,16 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
-    <a asp-action="Vol3TaskList">Back to List</a>
+    @if (Model.status == "Pending")
+    {
+        <a asp-action="TaskEdit" asp-route-id="@Model.ID" asp-route-orgId="@ViewBag.orgId">Edit</a> <a>|</a>
+    }
+    @if (Model.status == "Ended")
+    {
+        <a asp-action="PreviousTaskList" asp-route-orgId="@ViewBag.orgId">Back</a>
+    }
+    else
+    {
+        <a asp-action="ActiveTaskList" asp-route-orgId="@ViewBag.orgId">Back</a>
+    }
 </div>
