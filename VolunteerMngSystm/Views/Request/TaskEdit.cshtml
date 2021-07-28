@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-controller="Request" asp-route-orgId="@ViewBag.orgId" asp-action="TaskEdit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             @Html.AntiForgeryToken()
             <input type="hidden" asp-for="ID" />
@@ -30,19 +30,19 @@
                 <input asp-for="numOfVols" class="form-control" />
                 <span asp-validation-for="numOfVols" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="datetimepicker">
                 <label asp-for="DateTime_of_Task" style="font-weight: bold;" class="control-label"></label>
-                <input asp-for="DateTime_of_Task" type="date" class="form-control" />
+                <input asp-for="DateTime_of_Task" type="datetime-local" class="form-control" />
                 <span asp-validation-for="DateTime_of_Task" class="text-danger"></span>
             </div>
             @*<div class="form-group">
-            <label asp-for="Time_of_Task" style="font-weight: bold;" class="control-label">Start Time</label>
-            <input asp-for="Time_of_Task" type="date" class="form-control" />
-            <span asp-validation-for="Time_of_Task" class="text-danger"></span>
-        </div>*@
+                    <label asp-for="Time_of_Task" style="font-weight: bold;" class="control-label">Start Time</label>
+                    <input asp-for="Time_of_Task" type="date" class="form-control" />
+                    <span asp-validation-for="Time_of_Task" class="text-danger"></span>
+                </div>*@
             <div class="form-group">
                 <label asp-for="End_Time_of_Task" style="font-weight: bold;" class="control-label"></label>
-                <input asp-for="End_Time_of_Task" type="date" class="form-control" />
+                <input asp-for="End_Time_of_Task" type="time" class="form-control" />
                 <span asp-validation-for="End_Time_of_Task" class="text-danger"></span>
             </div>
             <div class="form-group">

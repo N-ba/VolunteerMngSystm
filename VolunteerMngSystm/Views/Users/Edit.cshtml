@@ -11,7 +11,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-controller="Users" asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
 
@@ -100,7 +100,7 @@
 </div>
 
 <div>
-    <a asp-action="VolTaskList" asp-route-id="@Model.ID" asp-route-usrId="@ViewBag.usrId">Back to List</a>
+    <a asp-action="VolTaskList" asp-controller="Request" asp-route-id="@Model.ID" asp-route-usrId="@ViewBag.usrId">Back to List</a>
 </div>
 
 @section Scripts {
