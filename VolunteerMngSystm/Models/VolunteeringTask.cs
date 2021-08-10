@@ -38,6 +38,7 @@ namespace VolunteerMngSystm.Models
         public string Postal_Code { get; set; }
         [DisplayName("Directions")]
         public string MapLink { get; set; }
+        [DisplayName("Status")]
         public string status { get; set; }
         public ICollection<Users> Volunteers { get; set; }
         public Organisations Organisations { get; set; }
