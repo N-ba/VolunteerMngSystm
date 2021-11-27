@@ -19,13 +19,11 @@ namespace VolunteerMngSystm.Data
 
             var expertises = new Expertise[]
             {
-            new Expertise{Subject="Chemistry"},
-            new Expertise{Subject="Microeconomics"},
-            new Expertise{Subject="Macroeconomics"},
-            new Expertise{Subject="Calculus"},
-            new Expertise{Subject="Trigonometry"},
-            new Expertise{Subject="Composition"},
-            new Expertise{Subject="Literature"}
+            new Expertise{Subject="Doctor"},
+            new Expertise{Subject="Nurse"},
+            new Expertise{Subject="Police"},
+            new Expertise{Subject="Fireman"},
+            new Expertise{Subject="Genral"}
             };
             foreach (Expertise c in expertises)
             {

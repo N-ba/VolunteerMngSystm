@@ -17,20 +17,34 @@ namespace VolunteerMngSystm.Controllers
 {
     public class UsersController : Controller
     {
-        //static int userID;
-        //static int orgID;
         private readonly MyContext _context;
-
         public UsersController(MyContext context)
         {
             _context = context;
         }
 
         // GET: Users
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int taskId, int orgId)
         {
-            return View(await _context.Users.ToListAsync());
-        }
+            var users = new List<Users>();
+            foreach (var request in _context.Requests)
+            {
+                if (request.VolunteeringTask_ID == taskId && request.status == "Accepted")
+                {
+                    foreach (var user in _context.Users)
+                    {
+                        if (user.ID == request.Users_ID)
+                        {
+                            users.Add(user);
+                        }
+                    }
+
+                }
+            }
+            ViewBag.OrgId = orgId;
+            ViewBag.TaskId = taskId;
+            return View(users);
+        }//Name needs changing
 
         //[HttpGet]
         //[ValidateAntiForgeryToken]
@@ -73,12 +87,9 @@ namespace VolunteerMngSystm.Controllers
         }
 
         // GET: Users/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, int taskId, int orgId)
         {
-            //if (id == null)
-            //{
-            //    return NotFound();
-            //}
+            var expertise = new List<string>();
 
             if (id == null)
             {
@@ -92,8 +103,28 @@ namespace VolunteerMngSystm.Controllers
                 return NotFound();
             }
 
+            //foreach (var n in _context.SelectedExpertises)
+            //{
+            //    if (users.ID == n.Users_ID)
+            //    {
+            //        foreach (var e in _context.Expertises)
+            //        {
+            //            if (e.ID == n.Expertise_ID)
+            //            {
+            //                expertise.Add(e.Subject);
+            //            }
+            //        }
+            //    }
+            //    if (n.ID == task.Expertise_ID)
+            //    {
+            //        ViewBag.Expertise = n.Subject;
+            //    }
+            //}
+
+            ViewBag.TaskId = taskId;
+            ViewBag.OrgId = orgId;
             return View(users);
-        }//I don't think this is ever used...
+        }//Change name to orgVolDetails
 
         // GET: Users/Create
         public IActionResult Create()
@@ -118,26 +149,24 @@ namespace VolunteerMngSystm.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(/*[Bind("Forename,Surname,DOB,Gender,Email,Password,Personal_ID,street,City,Postal_Code,Phone_number")]*/ Users users, /*SelectedExpertise selected,*/ UserExpertiseViewModel UEVM)
+        public async Task<IActionResult> Create(Users users, UserExpertiseViewModel UEVM)
         {
             try
             {
                 List<SelectedExpertise> se = new List<SelectedExpertise>();
                 if (ModelState.IsValid)
                 {
-                    string address = users.Postal_Code + ", " + users.street + ", " + users.City;
+                    string address = users.Postal_Code + ", " + users.Street + ", " + users.City;
 
-                    string requestUri = string.Format("https://maps.googleapis.com/maps/api/geocode/xml?key={1}&address={0}&sensor=false", Uri.EscapeDataString(address), "AIzaSyDlmElDRET9npkWNPAQG6DwvYVi2YVHYF0");
+                    string requestUri = string.Format("https://maps.googleapis.com/maps/api/geocode/xml?key={1}&address={0}&sensor=false",
+                        Uri.EscapeDataString(address), "AIzaSyBk4uG0eo_UOf2kp3hO0JSJ5Clc4Rp-8II");
 
                     WebRequest request = WebRequest.Create(requestUri);
                     WebResponse response = request.GetResponse();
 
                     XDocument xdoc = XDocument.Load(response.GetResponseStream());
 
-
                     XElement result = xdoc.Element("GeocodeResponse").Element("result");
-                    //XElement locationElement = result.Element("geometry").Element("location");
-
                     XElement country = result.Element("formatted_address");
                     bool validAddress = false;
                     foreach (var n in country.Value.Split(' '))
@@ -145,8 +174,6 @@ namespace VolunteerMngSystm.Controllers
                         if (n == "UK")
                         {
                             validAddress = true;
-                            //users.Latitude = Double.Parse(locationElement.Element("lat").Value);
-                            //users.Longitude = Double.Parse(locationElement.Element("lng").Value);
                         }
                     }
                     if (!validAddress)
@@ -228,7 +255,7 @@ namespace VolunteerMngSystm.Controllers
             //return RedirectToAction(nameof(VolTaskList));
             return RedirectToAction("VolTaskList", "Request", new { id = users.ID });
         }
-        // GET: Users/OrgReg
+        // GET: Organisation Registration page
         public IActionResult OrgReg()
         {
             return View();
@@ -279,7 +306,7 @@ namespace VolunteerMngSystm.Controllers
             return View(organisations);//
         }
 
-        // GET: Users/Create
+        // GET: Organisation Homepage
         public IActionResult OrgHome(int? orgId)
         {
             ViewBag.orgId = orgId;
@@ -334,7 +361,7 @@ namespace VolunteerMngSystm.Controllers
         }
 
 
-        // GET: Users/Edit/5
+        // GET: Volunteer Edit Account page
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -362,7 +389,7 @@ namespace VolunteerMngSystm.Controllers
             }
             ViewBag.usrId = id;
             return View(users);
-        }
+        } //LOOK INTO THIS NOWW!!!
 
         // POST: Users/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -379,7 +406,7 @@ namespace VolunteerMngSystm.Controllers
             if (await TryUpdateModelAsync<Users>(
                 userToUpdate,
                 "",
-                 s => s.Forename, s => s.Surname, s => s.DOB, s => s.Gender, s => s.Email, s => s.Password, s => s.Personal_ID, s => s.street, s => s.City,
+                 s => s.Forename, s => s.Surname, s => s.DOB, s => s.Gender, s => s.Email, s => s.Password, /*s => s.Personal_ID,*/ s => s.Street, s => s.City,
                 s => s.Postal_Code, s => s.Phone_number))
             {
                 try
@@ -398,6 +425,17 @@ namespace VolunteerMngSystm.Controllers
             ViewBag.usrId = id;
             return View(userToUpdate);
         }
+
+
+
+
+
+
+
+
+
+
+
 
         // GET: Users/Delete/5
         public async Task<IActionResult> Delete(int? id)

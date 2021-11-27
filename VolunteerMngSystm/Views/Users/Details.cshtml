@@ -1,14 +1,13 @@
 ﻿@model VolunteerMngSystm.Models.Users
 
 @{
-    Layout = "~/Views/Shared/_VolunteerLayout.cshtml";
+    Layout = "~/Views/Shared/_OrgLayout.cshtml";
     ViewData["Title"] = "Details";
 }
 
 <h1>Details</h1>
 
 <div>
-    <h4>Users</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -24,12 +23,6 @@
             @Html.DisplayFor(model => model.Surname)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.DOB)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.DOB)
-        </dd>
-        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Gender)
         </dt>
         <dd class="col-sm-10">
@@ -41,35 +34,6 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Email)
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Password)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Password)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Personal_ID)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Personal_ID)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.street)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.street)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.City)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.City)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Postal_Code)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Postal_Code)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Phone_number)
@@ -80,6 +44,5 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.ID">Edit</a> |
-    <a asp-action="VolTaskList" asp-controller="Request" asp-route-id="@Model.ID">Back to List</a>
+    <a asp-action="Index" asp-controller="Users" asp-route-taskId="@ViewBag.TaskId" asp-route-orgId="@ViewBag.OrgId">Back to List</a>
 </div>

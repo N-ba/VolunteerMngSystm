@@ -78,10 +78,10 @@
                 <span asp-validation-for="City" class="text-danger">@ViewBag.wrongAddress</span>
             </div>
             <div class="form-group">
-                <label asp-for="street" style="font-weight: bold;" class="control-label"></label>
-                <input asp-for="street" class="form-control" />
-                <span asp-validation-for="street" class="text-danger"></span>
-                <span asp-validation-for="street" class="text-danger">@ViewBag.wrongAddress</span>
+                <label asp-for="Street" style="font-weight: bold;" class="control-label"></label>
+                <input asp-for="Street" class="form-control" />
+                <span asp-validation-for="Street" class="text-danger"></span>
+                <span asp-validation-for="Street" class="text-danger">@ViewBag.wrongAddress</span>
             </div>
             <div class="form-group">
                 <label asp-for="Postal_Code" style="font-weight: bold;" class="control-label">Postal Code</label>
@@ -96,7 +96,7 @@
                 <span asp-validation-for="Phone_number" class="text-danger">@ViewBag.PhoneExists</span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Register" class="btn btn-primary" />
+                <input type="submit" value="Register" class="btn btn-dark" />
             </div>
         </form>
     </div>

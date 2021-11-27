@@ -3,8 +3,10 @@
 
 
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Login";
 }
+<h1>@ViewData["Title"]</h1>
+
 @using (Html.BeginForm("Login", "Users", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     <div class="row">
@@ -37,13 +39,13 @@
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Login" class="btn btn-primary" />
-                </div>
+                    <input type="submit" value="Login" class="btn btn-dark" />
+                </div>or
                 <br /><br />
 
-                <a class="btn btn-outline-info" asp-area="" asp-controller="Users" asp-action="Create">Register as a Volunteer</a>
+                <a class="btn btn-secondary" style="width:225px;" asp-area="" asp-controller="Users" asp-action="Create">Register as a Volunteer</a>
                 <br /><br />
-                <a class="btn btn-outline-success" asp-area="" asp-controller="Users" asp-action="OrgReg">Register as an Organisation</a>
+                <a class="btn btn-outline-dark" style="width:225px;" asp-area="" asp-controller="Users" asp-action="OrgReg">Register as an Organisation</a>
             </form>
         </div>
         <br />

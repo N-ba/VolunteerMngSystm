@@ -25,21 +25,18 @@ namespace VolunteerMngSystm.Models
         [Required]
         public string Email { get; set; }
         [Required]
-        public string Password { get; set; }// what is the best variable type best here (especially to encrypt it)
+        public string Password { get; set; }
         [Required]
-        public string Personal_ID { get; set; } // Might remove this (Talk to john about it - about what micheal said)
+        public string Personal_ID { get; set; } 
         [Required]
-        public string street { get; set; }
+        public string Street { get; set; }
         [Required]
         public string City { get; set; }
         [Required]
         public string Postal_Code { get; set; }
         [Required]
         public string Phone_number { get; set; }
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
 
-        //[NotMapped]
         public List<SelectedExpertise> SelectedExperise { get; set; }
     }
 }
