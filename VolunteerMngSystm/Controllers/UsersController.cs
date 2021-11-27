@@ -89,7 +89,7 @@ namespace VolunteerMngSystm.Controllers
         // GET: Users/Details/5
         public async Task<IActionResult> Details(int? id, int taskId, int orgId)
         {
-            var expertise = new List<string>();
+            var expertise = new List<Expertise>();
 
             if (id == null)
             {
@@ -103,27 +103,28 @@ namespace VolunteerMngSystm.Controllers
                 return NotFound();
             }
 
-            //foreach (var n in _context.SelectedExpertises)
-            //{
-            //    if (users.ID == n.Users_ID)
-            //    {
-            //        foreach (var e in _context.Expertises)
-            //        {
-            //            if (e.ID == n.Expertise_ID)
-            //            {
-            //                expertise.Add(e.Subject);
-            //            }
-            //        }
-            //    }
-            //    if (n.ID == task.Expertise_ID)
-            //    {
-            //        ViewBag.Expertise = n.Subject;
-            //    }
-            //}
+            foreach (var n in _context.SelectedExpertises)
+            {
+                if (users.ID == n.Users_ID)
+                {
+                    foreach (var e in _context.Expertises)
+                    {
+                        if (e.ID == n.Expertise_ID)
+                        {
+                            expertise.Add(e);
+                        }
+                    }
+                }
+                //if (n.ID == task.Expertise_ID)
+                //{
+                //    ViewBag.Expertise = n.Subject;
+                //}
+            }
+            var orgVolDetailsViewModel = new OrgVolDetailsViewModel() { Users = users, Expertises = expertise };
 
             ViewBag.TaskId = taskId;
             ViewBag.OrgId = orgId;
-            return View(users);
+            return View(orgVolDetailsViewModel);
         }//Change name to orgVolDetails
 
         // GET: Users/Create
