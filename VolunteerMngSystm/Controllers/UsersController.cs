@@ -24,7 +24,7 @@ namespace VolunteerMngSystm.Controllers
         }
 
         // GET: Users
-        public async Task<IActionResult> Index(int taskId, int orgId)
+        public async Task<IActionResult> OrgVolList(int taskId, int orgId)
         {
             var users = new List<Users>();
             foreach (var request in _context.Requests)
@@ -347,7 +347,7 @@ namespace VolunteerMngSystm.Controllers
                 try
                 {
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(OrgVolList));
                 }
                 catch (DbUpdateException /* ex */)
                 {
@@ -413,7 +413,7 @@ namespace VolunteerMngSystm.Controllers
                 try
                 {
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(OrgVolList));
                 }
                 catch (DbUpdateException /* ex */)
                 {
@@ -464,7 +464,7 @@ namespace VolunteerMngSystm.Controllers
             var users = await _context.Users.FindAsync(id);
             _context.Users.Remove(users);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(OrgVolList));
         }
 
         private bool UsersExists(int id)

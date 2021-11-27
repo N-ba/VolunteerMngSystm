@@ -1,0 +1,50 @@
+﻿@model IEnumerable<VolunteerMngSystm.Models.Users>
+
+@{
+    Layout = "~/Views/Shared/_OrgLayout.cshtml";
+    ViewData["Title"] = "VolList";
+}
+
+<h1>List of Volunteers</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Forename)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Surname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone_number)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Forename)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Surname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phone_number)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.ID" asp-route-taskId="@ViewBag.TaskId" asp-route-orgId="@ViewBag.OrgId">Details</a>
+                    @*<a asp-action="Delete" asp-route-id="@item.ID">Delete</a>*@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@if (((System.Collections.Generic.List<VolunteerMngSystm.Models.Users>)Model).Count == 0)
+{
+    <p>No Volunteers have accepted this task </p>
+}
+<a asp-action="OrgTaskDetails" asp-controller="Request" asp-route-id="@ViewBag.TaskId" asp-route-orgId="@ViewBag.OrgId">Back</a>
+
