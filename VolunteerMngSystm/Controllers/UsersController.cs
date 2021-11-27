@@ -44,7 +44,7 @@ namespace VolunteerMngSystm.Controllers
             ViewBag.OrgId = orgId;
             ViewBag.TaskId = taskId;
             return View(users);
-        }//Name needs changing
+        }
 
         //[HttpGet]
         //[ValidateAntiForgeryToken]
@@ -87,7 +87,7 @@ namespace VolunteerMngSystm.Controllers
         }
 
         // GET: Users/Details/5
-        public async Task<IActionResult> Details(int? id, int taskId, int orgId)
+        public async Task<IActionResult> OrgVolDetails(int? id, int taskId, int orgId)
         {
             var expertise = new List<Expertise>();
 
