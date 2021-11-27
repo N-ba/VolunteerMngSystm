@@ -9,10 +9,10 @@ namespace VolunteerMngSystm.Models
 {
     public class Users
     {
-        public Users()
-        {
-            DOB = DateTime.Today;
-        }
+        //public Users()
+        //{
+        //    DOB = new DateTime(01/01/2000);
+        //}
         public int ID { get; set; }
         [Required]
         public string Forename { get; set; }
