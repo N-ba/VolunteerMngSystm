@@ -33,11 +33,6 @@
                 <input asp-for="DateTime_of_Task" type="datetime-local" min="@DateTime.Now.ToString(format: "yyyy-MM-ddTHH:mm")" class="form-control" />
                 <span asp-validation-for="DateTime_of_Task" class="text-danger"></span>
             </div>
-            @*<div class="form-group">
-                    <label asp-for="Time_of_Task" style="font-weight: bold;" class="control-label">Start Time</label>
-                    <input asp-for="Time_of_Task" type="date" class="form-control" />
-                    <span asp-validation-for="Time_of_Task" class="text-danger"></span>
-                </div>*@
             <div class="form-group">
                 <label asp-for="End_Time_of_Task" style="font-weight: bold;" class="control-label"></label>
                 <input asp-for="End_Time_of_Task" type="time" class="form-control" />

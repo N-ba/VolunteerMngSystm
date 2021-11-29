@@ -61,9 +61,7 @@
             @Html.DisplayNameFor(model => model.accVolNum)
         </dt>
         <dd class="col-sm-10">
-            @*<a href="@Html.DisplayFor(model => model.accVolNum)" target="_blank"></a>*@
             <a asp-area="" asp-controller="Users" asp-action="OrgVolList" asp-route-taskId="@Model.ID" asp-route-orgId="@Model.Organisation_ID">@Html.DisplayFor(model => model.accVolNum)</a>
-            @*@Html.DisplayFor(model => model.accVolNum)*@
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Street)
@@ -80,7 +78,7 @@
     </dl>
 </div>
 <div>
-    @if (Model.status == "Pending")
+    @if (Model.status == "Pending" && Model.accVolNum == 0)
     {
         <a asp-action="TaskEdit" asp-route-id="@Model.ID" asp-route-orgId="@ViewBag.orgId">Edit</a> <a>|</a>
     }

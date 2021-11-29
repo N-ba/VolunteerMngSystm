@@ -232,7 +232,6 @@ namespace VolunteerMngSystm.Controllers
             if (task.accVolNum == task.numOfVols)
             {
                 task.status = "Accepted";
-                // NEW CODE
                 foreach (var item in _context.Requests)
                 {
                     if (item.VolunteeringTask_ID == id && item.status == "Pending")
@@ -240,20 +239,10 @@ namespace VolunteerMngSystm.Controllers
                         _context.Requests.Remove(item);
                     }
                 }
-                // NEW CODE
             }
             await _context.SaveChangesAsync();
             if (overlap)
             {
-                //try
-                //{
-                //    await _context.SaveChangesAsync();
-                //}
-                //catch (Exception e)
-                //{
-                //    Trace.WriteLine(e);
-                //}
-
                 return RedirectToAction("VolTaskDetails",
                     new
                     {
