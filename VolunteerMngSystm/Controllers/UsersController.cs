@@ -48,7 +48,7 @@ namespace VolunteerMngSystm.Controllers
 
         //[HttpGet]
         //[ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(string email)
+        public async Task<IActionResult> Login(string email, string password)
         {
 
             if (email == null)
@@ -65,15 +65,32 @@ namespace VolunteerMngSystm.Controllers
             }
             else if (users != null && orgs == null)
             {
+                if (password == users.Password)
+                {
+                    return RedirectToAction("VolTaskList", "Request", new { id = users.ID });
+                }
+                else
+                {
+                    ViewBag.incorrect = "Incorrect Password";
+                    return View();
+                }
                 //userID = users.ID;
                 // VolTaskList(users.ID);
-                return RedirectToAction("VolTaskList", "Request", new { id = users.ID });
+
             }
             else
             {
+                if (password == orgs.Password)
+                {
+                    return RedirectToAction("OrgHome", new { orgId = orgs.ID });
+                }
+                else
+                {
+                    ViewBag.incorrect = "Incorrect Password";
+                    return View();
+                }
                 //orgID = orgs.ID;
                 //return RedirectToAction(nameof(OrgHome));
-                return RedirectToAction("OrgHome", new { orgId = orgs.ID });
             }
 
 

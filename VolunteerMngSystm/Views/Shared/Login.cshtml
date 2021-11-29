@@ -6,6 +6,7 @@
     ViewData["Title"] = "Login";
 }
 <h1>@ViewData["Title"]</h1>
+<p style="color:red">@ViewBag.incorrect</p>
 
 @using (Html.BeginForm("Login", "Users", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
