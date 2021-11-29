@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
@@ -21,7 +22,7 @@ namespace VolunteerMngSystm.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> VolTaskDetails(int? id, int usrId)
+        public async Task<IActionResult> VolTaskDetails(int? id, int usrId, string? limitMsg)
         {
             if (id == null)
             {
@@ -56,6 +57,7 @@ namespace VolunteerMngSystm.Controllers
                 }
             }
             ViewBag.usrId = usrId;
+            ViewBag.limit = limitMsg;
             return View(task);
         }
 
@@ -173,15 +175,16 @@ namespace VolunteerMngSystm.Controllers
 
                     }
                 }
-                ViewBag.usrId = id;
             }
+
+            ViewBag.usrId = id;
             await _context.SaveChangesAsync();
             return View(userTask);
         }
 
         public async Task<IActionResult> TaskAccespted(int? id, int usrId)
         {
-
+            bool overlap = false;
             VolunteeringTask task = new VolunteeringTask();
 
             foreach (var item in _context.Tasks)
@@ -191,78 +194,39 @@ namespace VolunteerMngSystm.Controllers
                     task = item;
                 }
             }
-
             foreach (var request in _context.Requests)
             {
-                //if (request.Users_ID == usrId)
-                //{
-                //    if (request.status == "Accepted")
-                //    {
-                //        foreach (var t in _context.Tasks)
-                //        {
-                //            if (t.ID == request.VolunteeringTask_ID)
-                //            {
-                //                //if (t.DateTime_of_Task.ToString("yyyy-MM--dd") == task.DateTime_of_Task.ToString("yyyy-MM--dd"))
-                //                //{
-                //                //    if (t.DateTime_of_Task.ToString("HH:mm") != task.DateTime_of_Task.ToString("HH:mm"))
-                //                //    {
-                //                if ((t.DateTime_of_Task < task.DateTime_of_Task && t.End_Time_of_Task < task.End_Time_of_Task)
-                //                    || (t.DateTime_of_Task > task.DateTime_of_Task && t.End_Time_of_Task > task.End_Time_of_Task))
-                //                {
-                //                    if (request.VolunteeringTask_ID == id && request.Users_ID == usrId)
-                //                    {
-                //                        task.accVolNum += 1;
-                //                        request.status = "Accepted";
-                //                    }
-                //                }
-                //                else
-                //                {
-                //                    ViewBag.error = "Sorry cannot accept 2 tasks happening at the same time";
-                //                    return View(nameof(VolTaskDetails));
-                //                }
-                //                //    }
-                //                //    else
-                //                //    {
-                //                //        //cannot accept
-                //                //    }
-                //                //}
-                //            }
-                //        }
-                //    }
-                //    else
-                //    {
-                //        if (request.VolunteeringTask_ID == id /*&& request.Users_ID == usrId*/)
-                //        {
-                //            task.accVolNum += 1;
-                //            request.status = "Accepted";
-                //        }
-                //    }
-                //}
-                //if (request.Users_ID == usrId)
-                //{
-                if (request.VolunteeringTask_ID == id && request.Users_ID == usrId)
+                
+                if (request.Users_ID == usrId && request.status == "Accepted")
+                {
+                    foreach (var item in _context.Tasks)
+                    {
+                        if (item.ID == request.VolunteeringTask_ID)
+                        {
+                            if ((item.DateTime_of_Task.Date == task.DateTime_of_Task.Date) &&
+                                !((item.DateTime_of_Task > task.DateTime_of_Task && item.End_Time_of_Task > task.End_Time_of_Task) ||
+                                (item.DateTime_of_Task < task.DateTime_of_Task && item.End_Time_of_Task < task.End_Time_of_Task)))
+                            {
+                                foreach (var r in _context.Requests)
+                                {
+                                    if (r.VolunteeringTask_ID == task.ID && r.Users_ID == request.Users_ID)
+                                    {
+                                        _context.Requests.Remove(r);
+                                        overlap = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (request.VolunteeringTask_ID == id && request.Users_ID == usrId && overlap == false)
                 {
                     task.accVolNum += 1;
                     request.status = "Accepted";
+                    break;
                 }
-                //    //foreach (var t in _context.Tasks)
-                //    //{
-                //    //    if (t.ID == request.VolunteeringTask_ID && t.ID != task.ID)
-                //    //    {
-                //    //        if (t.DateTime_of_Task.ToString("yyyy-MM--dd") == task.DateTime_of_Task.ToString("yyyy-MM--dd"))
-                //    //        {
-                //    //            if (!((t.DateTime_of_Task < task.DateTime_of_Task && t.End_Time_of_Task < task.End_Time_of_Task)
-                //    //                                    || (t.DateTime_of_Task > task.DateTime_of_Task && t.End_Time_of_Task > task.End_Time_of_Task)))
-                //    //            {
-                //    //                _context.Requests.Remove(request);
-                //    //            }
-                //    //        }
-                //    //    }
-                //    //}
-                //}
-
             }
-
             if (task.accVolNum == task.numOfVols)
             {
                 task.status = "Accepted";
@@ -277,8 +241,25 @@ namespace VolunteerMngSystm.Controllers
                 // NEW CODE
             }
             await _context.SaveChangesAsync();
+            if (overlap)
+            {
+                //try
+                //{
+                //    await _context.SaveChangesAsync();
+                //}
+                //catch (Exception e)
+                //{
+                //    Trace.WriteLine(e);
+                //}
 
-            //return RedirectToAction(nameof(VolTaskList));
+                return RedirectToAction("VolTaskDetails",
+                    new
+                    {
+                        id = id,
+                        usrId = usrId,
+                        limitMsg = "Error: Overlapping with previously accepted task"
+                    });
+            }
             return RedirectToAction("VolTaskList", new { id = usrId });
         }
 

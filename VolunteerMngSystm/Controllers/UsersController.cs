@@ -314,31 +314,31 @@ namespace VolunteerMngSystm.Controllers
             return View();
         }
 
-        public async Task<IActionResult> OrgEdit(int? orgId)
+        public async Task<IActionResult> OrgEdit(int? id)
         {
-            if (orgId == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var orgs = await _context.Organisations.FindAsync(orgId);
+            var orgs = await _context.Organisations.FindAsync(id);
             if (orgs == null)
             {
                 return NotFound();
             }
-            ViewBag.orgId = orgId;
+            ViewBag.orgId = id;
             return View(orgs);
         }
 
         [HttpPost, ActionName("OrgEdit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OrgEdit(int orgId)
+        public async Task<IActionResult> OrgEdit(int ID)
         {
-            if (orgId == null)
+            if (ID == null)
             {
                 return NotFound();
             }
-            var orgToUpdate = await _context.Organisations.FirstOrDefaultAsync(s => s.ID == orgId);
+            var orgToUpdate = await _context.Organisations.FirstOrDefaultAsync(s => s.ID == ID);
             if (await TryUpdateModelAsync<Organisations>(
                 orgToUpdate,
                 "",
@@ -347,7 +347,7 @@ namespace VolunteerMngSystm.Controllers
                 try
                 {
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(OrgVolList));
+                    return RedirectToAction("OrgHome", new { orgId = orgToUpdate.ID });
                 }
                 catch (DbUpdateException /* ex */)
                 {
@@ -357,7 +357,7 @@ namespace VolunteerMngSystm.Controllers
                         "see your system administrator.");
                 }
             }
-            ViewBag.usrId = orgId;
+            ViewBag.orgId = ID;
             return View(orgToUpdate);
         }
 
@@ -413,7 +413,7 @@ namespace VolunteerMngSystm.Controllers
                 try
                 {
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(OrgVolList));
+                    return RedirectToAction("VolTaskList", "Request", new { id = userToUpdate.ID });
                 }
                 catch (DbUpdateException /* ex */)
                 {

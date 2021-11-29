@@ -2,7 +2,7 @@
 
 @{
     Layout = "~/Views/Shared/_OrgLayout.cshtml";
-    ViewData["Title"] = "OrgEdit";
+    ViewData["Title"] = "Edit";
 }
 
 <h1>Edit</h1>
@@ -39,8 +39,8 @@
         </form>
     </div>
 </div>
+<a asp-action="OrgHome" asp-route-orgId="@ViewBag.orgId">Back</a>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
-<a asp-action="OrgHome" asp-route-orgId="@ViewBag.orgId">Back</a>
