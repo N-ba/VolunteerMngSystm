@@ -196,7 +196,7 @@ namespace VolunteerMngSystm.Controllers
             }
             foreach (var request in _context.Requests)
             {
-                
+
                 if (request.Users_ID == usrId && request.status == "Accepted")
                 {
                     foreach (var item in _context.Tasks)
@@ -204,8 +204,8 @@ namespace VolunteerMngSystm.Controllers
                         if (item.ID == request.VolunteeringTask_ID)
                         {
                             if ((item.DateTime_of_Task.Date == task.DateTime_of_Task.Date) &&
-                                !((item.DateTime_of_Task > task.DateTime_of_Task && item.End_Time_of_Task > task.End_Time_of_Task) ||
-                                (item.DateTime_of_Task < task.DateTime_of_Task && item.End_Time_of_Task < task.End_Time_of_Task)))
+                                ((item.DateTime_of_Task >= task.DateTime_of_Task && item.DateTime_of_Task.TimeOfDay <= task.End_Time_of_Task) ||
+                                (item.End_Time_of_Task >= task.DateTime_of_Task.TimeOfDay && item.End_Time_of_Task <= task.End_Time_of_Task)))
                             {
                                 foreach (var r in _context.Requests)
                                 {
@@ -213,7 +213,8 @@ namespace VolunteerMngSystm.Controllers
                                     {
                                         _context.Requests.Remove(r);
                                         overlap = true;
-                                        break;
+                                        goto overlapping;
+                                        //break;
                                     }
                                 }
                             }
@@ -227,6 +228,7 @@ namespace VolunteerMngSystm.Controllers
                     break;
                 }
             }
+        overlapping:
             if (task.accVolNum == task.numOfVols)
             {
                 task.status = "Accepted";
