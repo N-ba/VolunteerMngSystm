@@ -4,27 +4,39 @@
     Layout = "~/Views/Shared/_OrgLayout.cshtml";
     ViewData["Title"] = "Main Menu";
 }
-
+@if (ViewBag.TaskCraetedSuccess != null && ViewBag.TaskCraetedSuccess)
+{
+    <p class="alert-success">
+        Task Successfully Created.
+        Click on View Active tasks to view other tasks and their details
+    </p>
+}
+else if ((ViewBag.EditedSuccess != null && ViewBag.EditedSuccess))
+{
+    <p class="alert-success">
+        Changes have been saved.
+    </p>
+}
 <h1 class="text-center">Main Menu</h1>
 
 <h5 class="text-center">What would you like to do?</h5>
 <hr />
 
-    <div class="text-center">
-            <div class="form-group">
-                <a class="btn btn-outline-dark" style="width:225px;" asp-controller="Request" asp-action="CreateTask" asp-route-orgId="@ViewBag.orgId">Create new Task</a>
-            </div>
-            <div class="form-group">
-                <a class="btn btn-outline-dark" style="width:225px;" asp-area="" asp-controller="Request" asp-action="ActiveTaskList" asp-route-orgId="@ViewBag.orgId">Active Tasks</a>
-            </div>
-            <div class="form-group">
-                <a class="btn btn-outline-dark" style="width:225px;" asp-area="" asp-controller="Request" asp-action="PreviousTaskList" asp-route-orgId="@ViewBag.orgId">Previouse Tasks</a>
-            </div>
+<div class="text-center">
+    <div class="form-group">
+        <a class="btn btn-outline-dark" style="width:225px;" asp-controller="Request" asp-action="CreateTask" asp-route-orgId="@ViewBag.orgId">Create new Task</a>
     </div>
+    <div class="form-group">
+        <a class="btn btn-outline-dark" style="width:225px;" asp-area="" asp-controller="Request" asp-action="ActiveTaskList" asp-route-orgId="@ViewBag.orgId">View Active Tasks</a>
+    </div>
+    <div class="form-group">
+        <a class="btn btn-outline-dark" style="width:225px;" asp-area="" asp-controller="Request" asp-action="PreviousTaskList" asp-route-orgId="@ViewBag.orgId">View Ended Tasks</a>
+    </div>
+</div>
 
 @*<div>
-    <a asp-action="Index">Back to List</a>
-</div>*@
+        <a asp-action="Index">Back to List</a>
+    </div>*@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

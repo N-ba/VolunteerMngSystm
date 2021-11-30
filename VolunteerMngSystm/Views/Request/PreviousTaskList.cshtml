@@ -24,33 +24,9 @@
                 <th>
                     @Html.DisplayNameFor(model => model.DateTime_of_Task)
                 </th>
-                @*<th>
-                    @Html.DisplayNameFor(model => model.Time_of_Task)
-                </th>*@
                 <th>
                     @Html.DisplayNameFor(model => model.End_Time_of_Task)
                 </th>
-                @*<th>
-                        @Html.DisplayNameFor(model => model.Email)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Password)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Personal_ID)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.street)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.City)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Postal_Code)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Phone_number)
-                    </th>*@
                 <th></th>
             </tr>
         </thead>
@@ -68,37 +44,11 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.DateTime_of_Task)
                     </td>
-                    @*<td>
-                        @Html.DisplayFor(modelItem => item.Time_of_Task)
-                    </td>*@
                     <td>
                         @Html.DisplayFor(modelItem => item.End_Time_of_Task)
                     </td>
-                    @* <td>
-                            @Html.DisplayFor(modelItem => item.Email)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Password)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Personal_ID)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.street)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.City)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Postal_Code)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Phone_number)
-                        </td>*@
                     <td>
-                        @*<a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |*@
-                        <a asp-action="OrgTaskDetails" asp-route-id="@item.ID" asp-route-orgId="@ViewBag.orgId">Details</a> @*|
-                            <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>*@
+                        <a asp-action="OrgTaskDetails" asp-route-id="@item.ID" asp-route-orgId="@ViewBag.orgId">Details</a>
                     </td>
                 </tr>
             }
@@ -107,6 +57,6 @@
 </div>
     @if (((System.Collections.Generic.List<VolunteerMngSystm.Models.VolunteeringTask>)Model).Count == 0)
     {
-        <p>No Volunteering tasks are set </p>
+        <p class="alert-info" style="font-size:20px">You do not have any tasks that have ended yet...</p>
     }
     <a asp-action="OrgHome" asp-controller="Users" asp-route-orgId="@ViewBag.orgId">Back</a>

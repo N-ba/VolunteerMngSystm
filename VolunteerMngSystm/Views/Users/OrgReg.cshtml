@@ -8,6 +8,7 @@
 
 <h5>As Organisation</h5>
 <hr />
+<p class="text-danger">@ViewBag.EmailExists</p>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="OrgReg">
@@ -33,12 +34,12 @@
                 <label asp-for="Password" style="font-weight: bold;" class="control-label"></label>
                 <input asp-for="Password" type="password" class="form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
-            </div><br /><br />
+            </div><br />
             <div class="form-group">
-                <label asp-for="OrganisationsID" style="font-weight: bold;" class="control-label">Verification ID</label>
+                <label asp-for="OrganisationsID" style="font-weight: bold;" class="control-label">Authentication Certificate</label>
                 <input asp-for="OrganisationsID" type="file" accept="image/* " />
                 <span asp-validation-for="OrganisationsID" class="text-danger"></span>
-            </div>
+            </div><br /><br />
             <div class="form-group">
                 <input type="submit" value="Register" class="btn btn-dark" />
             </div>

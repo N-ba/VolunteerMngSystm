@@ -80,7 +80,7 @@
 <div>
     @if (Model.status == "Pending" && Model.accVolNum == 0)
     {
-        <a asp-action="TaskEdit" asp-route-id="@Model.ID" asp-route-orgId="@ViewBag.orgId">Edit</a> <a>|</a>
+        <a asp-action="TaskEdit" asp-route-task="@Model" asp-route-id="@Model.ID" asp-route-orgId="@ViewBag.orgId">Edit</a> <a>|</a>
     }
     @if (Model.status == "Ended")
     {

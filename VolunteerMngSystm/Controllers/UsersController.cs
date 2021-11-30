@@ -169,6 +169,7 @@ namespace VolunteerMngSystm.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Users users, UserExpertiseViewModel UEVM)
         {
+            bool validAddress = false;
             try
             {
                 List<SelectedExpertise> se = new List<SelectedExpertise>();
@@ -183,20 +184,24 @@ namespace VolunteerMngSystm.Controllers
                     WebResponse response = request.GetResponse();
 
                     XDocument xdoc = XDocument.Load(response.GetResponseStream());
-
-                    XElement result = xdoc.Element("GeocodeResponse").Element("result");
-                    XElement country = result.Element("formatted_address");
-                    bool validAddress = false;
-                    foreach (var n in country.Value.Split(' '))
+                    try
                     {
-                        if (n == "UK")
+                        XElement result = xdoc.Element("GeocodeResponse").Element("result");
+                        XElement country = result.Element("formatted_address");
+
+                        foreach (var n in country.Value.Split(' '))
                         {
-                            validAddress = true;
+                            if (n == "UK")
+                            {
+                                validAddress = true;
+                            }
                         }
                     }
+                    catch (Exception e) { }
+
                     if (!validAddress)
                     {
-                        ViewBag.wrongAddress = "Address Invalid";
+                        ViewBag.wrongAddress = "Invalid Input: Address must be in the UK";
                         var item = _context.Expertises.ToList();
                         UserExpertiseViewModel Vm = new UserExpertiseViewModel();
                         Vm.AvailableSubjects = item.Select(e => new CheckBoxItems()
@@ -309,7 +314,7 @@ namespace VolunteerMngSystm.Controllers
                 {
                     ModelState.Clear();
                     ViewBag.EmailExists = "User already Exists try a different email";
-                    return View();
+                    return View(nameof(OrgReg));
                 }
 
             }
@@ -327,6 +332,8 @@ namespace VolunteerMngSystm.Controllers
         // GET: Organisation Homepage
         public IActionResult OrgHome(int? orgId)
         {
+            ViewBag.TaskCraetedSuccess = TempData["Task Successfully created"] as bool?;
+            ViewBag.EditedSuccess = TempData["Successful Edite"] as bool?;
             ViewBag.orgId = orgId;
             return View();
         }
@@ -364,6 +371,7 @@ namespace VolunteerMngSystm.Controllers
                 try
                 {
                     await _context.SaveChangesAsync();
+                    TempData["Successful Edite"] = true;
                     return RedirectToAction("OrgHome", new { orgId = orgToUpdate.ID });
                 }
                 catch (DbUpdateException /* ex */)
@@ -430,6 +438,7 @@ namespace VolunteerMngSystm.Controllers
                 try
                 {
                     await _context.SaveChangesAsync();
+                    TempData["Successful Edite"] = true;
                     return RedirectToAction("VolTaskList", "Request", new { id = userToUpdate.ID });
                 }
                 catch (DbUpdateException /* ex */)
