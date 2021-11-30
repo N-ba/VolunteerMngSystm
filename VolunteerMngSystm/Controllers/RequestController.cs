@@ -184,8 +184,11 @@ namespace VolunteerMngSystm.Controllers
 
         public async Task<IActionResult> TaskAccespted(int? id, int usrId)
         {
+            int count = 0;
             bool overlap = false;
             VolunteeringTask task = new VolunteeringTask();
+            Requests req = new Requests();
+            int requestCount = await _context.Requests.CountAsync<Requests>();
 
             foreach (var item in _context.Tasks)
             {
@@ -213,6 +216,7 @@ namespace VolunteerMngSystm.Controllers
                                     {
                                         _context.Requests.Remove(r);
                                         overlap = true;
+                                        req = null;
                                         goto overlapping;
                                         //break;
                                     }
@@ -223,11 +227,15 @@ namespace VolunteerMngSystm.Controllers
                 }
                 if (request.VolunteeringTask_ID == id && request.Users_ID == usrId && overlap == false)
                 {
-                    task.accVolNum += 1;
-                    request.status = "Accepted";
-                    TempData["Task Successfully Accepted"] = true;
-                    break;
+                    req = request;
                 }
+                count++;
+            }
+            if (req != null)
+            {
+                task.accVolNum += 1;
+                req.status = "Accepted";
+                TempData["Task Successfully Accepted"] = true;
             }
         overlapping:
             if (task.accVolNum == task.numOfVols)
@@ -368,15 +376,27 @@ namespace VolunteerMngSystm.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateTask(VolunteeringTask volunteeringTask, int orgId)
         {
+            bool invalid = false;
             try
             {
                 if (ModelState.IsValid)
                 {
                     string address = volunteeringTask.Postal_Code + ", " + volunteeringTask.Street + ", " + volunteeringTask.City;
                     string link = FindAdress(volunteeringTask.Postal_Code, volunteeringTask.Street, volunteeringTask.City);
+
                     if (link == "Address Invalid")
                     {
-                        ViewBag.wrongAddress = "Address Invalid";
+                        invalid = true;
+                        ViewBag.wrongAddress = "Invalid Input: Address must be in the UK";
+
+                    }
+                    if (volunteeringTask.DateTime_of_Task.TimeOfDay > volunteeringTask.End_Time_of_Task)
+                    {
+                        invalid = true;
+                        ViewBag.TimeError = "End time must be before start time";
+                    }
+                    if (invalid)
+                    {
                         volunteeringTask.ExperiseList = _context.Expertises.ToList<Expertise>();
                         ViewBag.orgId = orgId;
                         return View(volunteeringTask);
@@ -441,6 +461,7 @@ namespace VolunteerMngSystm.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> TaskEdit(int id, int orgId)
         {
+            bool invalid = false;
             if (id == null)
             {
                 return NotFound();
@@ -465,11 +486,19 @@ namespace VolunteerMngSystm.Controllers
                     string link = FindAdress(taskToUpdate.Postal_Code, taskToUpdate.Street, taskToUpdate.City);
                     if (link == "Address Invalid")
                     {
-                        ViewBag.wrongAddress = "Address Invalid";
+                        invalid = true;
+                        ViewBag.wrongAddress = "Invalid Input: Address must be in the UK";
+                    }
+                    if (taskToUpdate.DateTime_of_Task.TimeOfDay > taskToUpdate.End_Time_of_Task)
+                    {
+                        invalid = true;
+                        ViewBag.TimeError = "End time must be before start time";
+                    }
+                    if (invalid)
+                    {
                         taskToUpdate.ExperiseList = _context.Expertises.ToList<Expertise>();
                         ViewBag.orgId = orgId;
                         return View(taskToUpdate);
-
                     }
                     string address = taskToUpdate.Postal_Code + ", " + taskToUpdate.Street + ", " + taskToUpdate.City;
 
