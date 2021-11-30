@@ -13,9 +13,6 @@ namespace VolunteerMngSystm.Models
         public int Expertise_ID { get; set; }
         public int Users_ID { get; set; }
         public string Proof { get; set; }
-       //public bool isExpertise { get; set; }
-       //[NotMapped]
-        //public List<Expertise> Experiselist { get; set; }
         public Expertise Expertise { get; set; }
         public Users User { get; set; }
     }

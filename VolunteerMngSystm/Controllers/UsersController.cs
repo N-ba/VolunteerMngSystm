@@ -24,7 +24,7 @@ namespace VolunteerMngSystm.Controllers
         }
 
         // GET: Users
-        public async Task<IActionResult> OrgVolList(int taskId, int orgId)
+        public IActionResult OrgVolList(int taskId, int orgId)
         {
             var users = new List<Users>();
             foreach (var request in _context.Requests)
@@ -46,8 +46,6 @@ namespace VolunteerMngSystm.Controllers
             return View(users);
         }
 
-        //[HttpGet]
-        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(string email, string password)
         {
 
@@ -74,8 +72,6 @@ namespace VolunteerMngSystm.Controllers
                     ViewBag.incorrect = "Incorrect Password";
                     return View();
                 }
-                //userID = users.ID;
-                // VolTaskList(users.ID);
 
             }
             else
@@ -89,8 +85,6 @@ namespace VolunteerMngSystm.Controllers
                     ViewBag.incorrect = "Incorrect Password";
                     return View();
                 }
-                //orgID = orgs.ID;
-                //return RedirectToAction(nameof(OrgHome));
             }
 
 
@@ -98,8 +92,6 @@ namespace VolunteerMngSystm.Controllers
 
         public IActionResult Logout()
         {
-            //userID = -1;
-            //orgID = -1;
             return RedirectToAction(nameof(Login));
         }
 
@@ -132,25 +124,16 @@ namespace VolunteerMngSystm.Controllers
                         }
                     }
                 }
-                //if (n.ID == task.Expertise_ID)
-                //{
-                //    ViewBag.Expertise = n.Subject;
-                //}
             }
             var orgVolDetailsViewModel = new OrgVolDetailsViewModel() { Users = users, Expertises = expertise };
 
             ViewBag.TaskId = taskId;
             ViewBag.OrgId = orgId;
             return View(orgVolDetailsViewModel);
-        }//Change name to orgVolDetails
-
+        }
         // GET: Users/Create
         public IActionResult Create()
         {
-            //Users userEx = new Users();
-            //userEx.Experiselist = _context.Expertises.ToList<Expertise>();
-
-
             var item = _context.Expertises.ToList();
             UserExpertiseViewModel Vm = new UserExpertiseViewModel();
             Vm.AvailableSubjects = item.Select(e => new CheckBoxItems()
@@ -226,7 +209,6 @@ namespace VolunteerMngSystm.Controllers
                     {
                         _context.Add(users);
                         await _context.SaveChangesAsync();
-                        //userID = users.ID;
 
                         foreach (var x in UEVM.AvailableSubjects)
                         {
@@ -241,7 +223,6 @@ namespace VolunteerMngSystm.Controllers
                             await _context.SaveChangesAsync();
                         }
 
-                        //return RedirectToAction(nameof(VolTaskList));
                         return RedirectToAction("VolTaskList", "Request", new { id = users.ID });
                     }
                     else
@@ -274,8 +255,6 @@ namespace VolunteerMngSystm.Controllers
                     "Try again, and if the problem persists " +
                     "see your system administrator.");
             }
-
-            //return RedirectToAction(nameof(VolTaskList));
             return RedirectToAction("VolTaskList", "Request", new { id = users.ID });
         }
         // GET: Organisation Registration page
@@ -286,7 +265,7 @@ namespace VolunteerMngSystm.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OrgReg(/*[Bind("Organisation_name,Industry,Email,Password,OrganisationsID")] */Organisations organisations)
+        public async Task<IActionResult> OrgReg(Organisations organisations)
         {
             try
             {
@@ -415,7 +394,7 @@ namespace VolunteerMngSystm.Controllers
             }
             ViewBag.usrId = id;
             return View(users);
-        } //LOOK INTO THIS NOWW!!!
+        }
 
         // POST: Users/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.

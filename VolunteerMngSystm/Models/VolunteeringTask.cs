@@ -14,7 +14,6 @@ namespace VolunteerMngSystm.Models
         public VolunteeringTask()
         {
             DateTime_of_Task = DateTime.Today;
-            //End_Time_of_Task = TimeSpan
             numOfVols = 1;
             status = "Pending";
         }

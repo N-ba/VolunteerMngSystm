@@ -11,6 +11,5 @@ namespace VolunteerMngSystm.Models
         public string Subject { get; set; }
 
         public List<SelectedExpertise> SelectedExpertise { get; set; }
-        //public bool isChecked { get; set; }
     }
 }
